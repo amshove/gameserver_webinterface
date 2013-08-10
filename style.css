@@ -1,0 +1,69 @@
+* {
+  font-family: Arial, verdana, sans-serif;
+  font-size: 12px;
+}
+
+a {
+  color: #000000;
+}
+
+img {
+  border: 0px;
+}
+
+table {
+  border: 1px solid gray;
+
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+
+th {
+  background-color: #07038F;
+  color: #FFFFFF;
+}
+
+input,select,textarea {
+  border: 1px solid gray;
+
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+
+h3 {
+  margin-bottom: 1px;
+}
+
+.meldung_ok {
+  background-color: #f2fbee;
+  border:1px solid #52ad08;
+  color: #52ad08;
+  padding-left: 5px;
+
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+
+.meldung_notify {
+  background-color:#FBF9EE;
+  border:1px solid #FF8800;
+  color: #FF8800;
+  padding-left: 5px;
+
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+
+.meldung_error {
+  background-color: #FEF1EC;
+  border: 1px solid #CD0A0A;
+  color: #CD0A0A;
+  padding-left: 5px;
+
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+
+.navi {
+  background-color: #07038F;
+  color: #FFFFFF;
+  padding: 3px 5px;
+  margin-bottom: 10px;
+
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}

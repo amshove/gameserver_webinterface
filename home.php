@@ -1,0 +1,124 @@
+<?php
+############################################################
+# Gameserver Webinterface                                  #
+# Copyright (C) 2010 Torsten Amshove <torsten@amshove.net> #
+############################################################
+
+if($_SESSION["ad_level"] >= 1){
+
+$server = array();
+$query = mysql_query("SELECT * FROM server ORDER BY name");
+while($row = mysql_fetch_assoc($query)) $server[] = $row;
+
+$games = array();
+$query = mysql_query("SELECT * FROM games ORDER BY name");
+while($row = mysql_fetch_assoc($query)) $games[$row["id"]] = $row;
+
+if($_SESSION["ad_level"] >= 4 && $_GET["cmd"] == "cleanup"){
+  // Cleanup - gestorbene Screens aus der "running"-Tabelle loeschen
+  foreach($server as $s){
+    $tmp = list_screens($s["ip"]);
+    $query = mysql_query("SELECT id, screen FROM running WHERE serverid = '".$s["id"]."'");
+    while($row = mysql_fetch_assoc($query)){
+      if(!in_array($row["screen"],$tmp)) mysql_query("DELETE FROM running WHERE id = '".$row["id"]."' LIMIT 1");
+    }
+  }
+}elseif($_GET["cmd"] == "kill" && !empty($_GET["id"]) && is_numeric($_GET["id"])){
+  // Gameserver killen
+  kill_server(mysql_real_escape_string($_GET["id"]));
+}elseif($_GET["cmd"] == "restart" && !empty($_GET["id"]) && is_numeric($_GET["id"])){
+  // Gameserver restarten
+  restart_server(mysql_real_escape_string($_GET["id"]));
+}elseif($_POST["kill_multi"]){
+  // Mehrere Gameserver killen
+  if(is_array($_POST["kill"])){
+    foreach($_POST["kill"] as $id) kill_server($id);
+  }
+}
+
+// Einlesen aller HLTV-Instanzen
+$hltv_running = array();
+$query = mysql_query("SELECT hltv_for, screen, name FROM running AS r, server AS s WHERE r.serverid = s.id AND r.hltv_for > 0 LIMIT 1");
+while($row = mysql_fetch_assoc($query)){
+  $hltv_running[$row["hltv_for"]] = "<u>Es l&auml;uft ein HLTV f&uuml;r diesen Server auf Server <b>".$row["name"]."</b> mit Screen <b>".$row["screen"]."</b><br></u>";
+}
+
+// Cleanup-Link
+if($_SESSION["ad_level"] >= 4) echo "<a href='index.php?cmd=cleanup' title='Gestorbene Server l&ouml;schen'>Cleanup</a>";
+
+// JS fuer die Checkboxen
+echo "<script>
+function checkAll(i){
+  var status = document.getElementById('check_'+i).checked;
+  var fields = document.getElementById('form_'+i).elements;
+
+  if(typeof(fields.checked) != 'undefined'){
+    fields.checked = status;
+  }else{
+    for(x=0; x<fields.length; x++){
+      if(typeof(fields[x].checked) != 'undefined'){
+        fields[x].checked = status;
+      }
+    }
+  }
+}
+</script>";
+
+// Tabellen
+$i=0;
+foreach($server as $s){
+  if(host_online($s["ip"])) $server_color = "#00FF00"; // Server online? farbe anpassen
+  else $server_color = "#FF0000";
+  echo "<h3 style='background-color: $server_color; width: 150px'>&nbsp;".$s["name"].".lan (".$s["ip"].")</h3>";
+  echo "<table>
+    <tr>
+      <th><input type='checkbox' id='check_$i' onClick='checkAll(\"".$i."\");'></th>
+      <th width='50'>Game</th>
+      <th width='100'>Screen</th>
+      <th width='500'>Variablen</th>
+      <th width='50'>&nbsp;</th>
+    </tr>";
+  echo "<form id='form_$i' method='POST' action='index.php'>";
+  $screens = list_screens($s["ip"]); // Laufende Screen einlesen
+  $scores = 0;
+  $query = mysql_query("SELECT * FROM running WHERE serverid = '".$s["id"]."' ORDER BY gameid");
+  while($row = mysql_fetch_assoc($query)){ // Games auf dem Server auflisten
+    if(!empty($row["hltv_for"])){ // Ist dies ein HLTV fuer einen Server? dann Hinweis-Text
+      $query2 = mysql_query("SELECT screen, name FROM running AS r, server AS s WHERE r.serverid = s.id AND r.id = '".$row["hltv_for"]."' LIMIT 1");
+      $hltv_text = "<u>HLTV f&uuml;r <b>".@mysql_result($query2,0,"screen")."</b> auf Server <b>".@mysql_result($query2,0,"name")."</b></u><br>";
+    }else $hltv_text = "";
+
+    $scores += $row["score"]; // Score addieren fuer die Anzeige
+    
+    if(!in_array($row["screen"],$screens)) $dead = true; // Wenn Screen in running-Tabelle aber nicht auf Server: gestorben
+    else $dead = false;
+
+    echo "<tr ";
+    if($dead) echo "style='background-color: #CC9999;'"; // Wenn gestorben, farbe anpassen ...
+    echo ">";
+    echo "<td valign='top'><input type='checkbox' name='kill[]' value='".$row["id"]."'></td>
+      <td align='center' valign='top'><a href='hlsw://".$s["ip"].":".$row["port"]."'><img border=0 src='icons/".$games[$row["gameid"]]["icon"]."' height='$image_height'><br>".$games[$row["gameid"]]["name"];
+    if($dead) echo "<br><b>gestorben</b>"; // ... und Hinweis
+    echo "</a></td>
+      <td valign='top'>".$row["screen"]."</td>
+      <td>".$hltv_text.$hltv_running[$row["id"]].$row["vars"]."</td>
+      <td valign='top' align='center'>";
+    
+    // Wenn ein HLTV-Verweis vorhanden ist, HLTV-Link anzeigen  
+    $hltv = $games[$row["gameid"]]["hltv"];
+    if(!empty($hltv) && empty($hltv_running[$row["id"]])){ // Wenn schon ein HLTV fuer diesen Server laeuft - nicht anzeigen
+      echo "<a href='index.php?page=anlegen&game=".$hltv."&ip=".$s["ip"].":".$row["port"]."&hltv_for=".$row["id"]."'><img src='icons/".$games[$hltv]["icon"]."' height='$image_height'></a><br>";
+    }
+    
+    echo "<a href='index.php?cmd=kill&id=".$row["id"]."' onClick='return confirm(\"Server wirklich killen?\");'>kill</a></td>
+    </tr>";
+  }
+  echo "</table>";
+  echo "Score: $scores von ".$s["score"]." belegt - ".($s["score"] - $scores)." noch frei<br>"; // Scores
+  echo "<input type='submit' name='kill_multi' value='kill' onClick='return confirm(\"Wirklich alle ausgew&auml;höten Server killen?\");'>";
+  echo "</form>";
+  echo "<br><br>";
+  $i++;
+}
+}
+?>
