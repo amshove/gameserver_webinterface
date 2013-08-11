@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `server` (
   `games` varchar(200) NOT NULL,
   `score` int(11) NOT NULL,
   `notes` text NOT NULL,
+  `active` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

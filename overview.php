@@ -9,7 +9,7 @@ if($_SESSION["ad_level"] >= 1){
 // Daten einlesen fuer Server-Statistik
 $i=0;
 $server = array();
-$query = mysql_query("SELECT * FROM server ORDER BY name");
+$query = mysql_query("SELECT * FROM server WHERE active = 1 ORDER BY name");
 while($row = mysql_fetch_assoc($query)){
   $server[$i] = $row;
   $server[$i]["online"] = host_check_login($row); // Server online?

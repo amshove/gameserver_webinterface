@@ -20,6 +20,9 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
 }elseif($_GET["cmd"] == "del" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Server loeschen
   mysql_query("DELETE FROM server WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1");
+}elseif($_GET["cmd"] == "active" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
+  // Server aktivieren / deaktivieren
+  mysql_query("UPDATE server SET active = IF(active = 0, 1, 0) WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1");
 }elseif($_GET["cmd"] == "access" && is_numeric($_GET["id"]) && !empty($_GET["id"]) && !empty($_POST["pw"])){
   // Zugang einrichten
   $server = mysql_fetch_assoc(mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1"));
@@ -132,6 +135,7 @@ echo "<br><br>";
 // Tabelle
 echo "<table>
   <tr>
+    <th width='40'>Aktiv</th>
     <th width='40'>Ping</th>
     <th width='40'>Login</th>
     <th width='200'>Name</th>
@@ -145,13 +149,14 @@ $query = mysql_query("SELECT * FROM server ORDER BY name");
 while($row = mysql_fetch_assoc($query)){
   $ping_color = "#FF0000";
   $login_color = "#FF0000";
-  if(host_check_ping($row)){
+  if($row["active"] == 1 && host_check_ping($row)){
     $ping_color = "#00FF00";
     if(host_check_login($row)) $login_color = "#00FF00";
   }
 
   echo "<tr>
-    <td style='background-color: $ping_color;'>&nbsp;</td>
+    <td valign='top' style='background-color: ".($row["active"] == 1 ? "#00FF00" : "#FF0000").";' align='center'><a href='index.php?page=server&cmd=active&id=".$row["id"]."'>chg</a></td>
+    <td valign='top' style='background-color: $ping_color;'>&nbsp;</td>
     <td valign='top' style='background-color: $login_color;'>".$row["user"]."</td>
     <td valign='top' title='".$row["ip"]."'>".$row["name"]."</td>
     <td valign='top'>";

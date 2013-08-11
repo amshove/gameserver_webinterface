@@ -7,7 +7,7 @@
 if($_SESSION["ad_level"] >= 1){
 
 $server = array();
-$query = mysql_query("SELECT * FROM server ORDER BY name");
+$query = mysql_query("SELECT * FROM server WHERE active = 1 ORDER BY name");
 while($row = mysql_fetch_assoc($query)) $server[] = $row;
 
 $games = array();

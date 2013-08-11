@@ -151,7 +151,7 @@ function restart_server($running_id){
 
 // Funktion zum Auflisten aller Server, denen ein bestimmtes Game zugewiesen ist
 function get_server_with_game($gameid){
-  $query = mysql_query("SELECT * FROM server WHERE games LIKE '".$gameid."' OR games LIKE '".$gameid.",%' OR games LIKE '%,".$gameid.",%' OR games LIKE '%,".$gameid."' ORDER BY name");
+  $query = mysql_query("SELECT * FROM server WHERE active = 1 AND (games LIKE '".$gameid."' OR games LIKE '".$gameid.",%' OR games LIKE '%,".$gameid.",%' OR games LIKE '%,".$gameid."') ORDER BY name");
   return $query;
 }
 
