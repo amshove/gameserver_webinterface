@@ -25,12 +25,11 @@ if($_POST["anlegen"]){
     }
     if($_SESSION["ad_level"] >= 4) echo "<div class='meldung_notify'><b>CMD:</b> $cmd</div><br>"; // Fuer Admins wird der Befehl mit angezeigt
     $screen = $game["name"]."_".$port;
-    $hltv_for = mysql_real_escape_string($_POST["hltv_for"]);
     if(!starte_cmd($server["ip"],$cmd,$screen,$game["folder"])){ // Server starten ...
       echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
     }else{
       // Und in die "running"-Tabelle einfuegen
-      mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', hltv_for = '".$hltv_for."', score = '".$game["score"]."', vars = '".$values."'");
+      mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', score = '".$game["score"]."', vars = '".$values."'");
       echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
     }
   }
@@ -50,7 +49,6 @@ if($_GET["game"]){
   $game = mysql_fetch_assoc($query);
   echo "<form action='index.php?page=anlegen' method='POST'>
   <input type='hidden' name='game' value='".$game["id"]."'>
-  <input type='hidden' name='hltv_for' value='".$_GET["hltv_for"]."'>
   <table>
     <tr>
       <td>Zielserver:</td>
@@ -71,7 +69,6 @@ while($row = mysql_fetch_assoc($query)){
   $i=0;
   foreach($vars as $var){
     // Pro Variable wird ein Formular-Feld angezeigt und mit den Defaults gefuellt, wenn vorhanden
-    if($var == "##ip##" && !empty($_GET["ip"])) $defaults[$i] = $_GET["ip"]; // IP kann per GET gefuellt werden (wird fuer den HLTV-Button benoetigt)
     echo "<tr>
       <td>".substr($var,2,-2).":</td>
       <td><input type='text' name='".$var."' value='".$defaults[$i]."' size='70'></td>

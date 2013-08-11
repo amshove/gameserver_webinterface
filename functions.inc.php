@@ -115,17 +115,6 @@ function kill_screen($ip,$screen){
 function kill_server($running_id){
   $query = mysql_query("SELECT r.id AS id, ip, screen FROM running AS r, server AS s WHERE r.serverid = s.id AND r.id = '".$running_id."' LIMIT 1");
   $row = mysql_fetch_assoc($query);
-  $query = mysql_query("SELECT r.id AS id, ip, screen FROM running AS r, server AS s WHERE r.serverid = s.id AND r.hltv_for = '".$row["id"]."' LIMIT 1");
-  if(mysql_num_rows($query) > 0){
-    echo "<div class='meldung_notify'>HLTV gefunden - der wird jetzt auch gekillt.</div><br>";
-    $row_hltv = mysql_fetch_assoc($query);
-    if(!kill_screen($row_hltv["ip"],$row_hltv["screen"])){
-      echo "<div class='meldung_error'>HLTV konnte nicht gestoppt werden.</div><br>";
-    }else{
-      mysql_query("DELETE FROM running WHERE id = '".$row_hltv["id"]."' LIMIT 1");
-      echo "<div class='meldung_ok'>HLTV gekillt.</div><br>";
-    }
-  }
   if(!kill_screen($row["ip"],$row["screen"])){
     echo "<div class='meldung_error'>Server konnte nicht gestoppt werden.</div><br>";
   }else{
@@ -144,17 +133,6 @@ echo mysql_error();
   $port = $row["port"];
   $vars = $row["vars"];
 echo print_r($row);
-  $query = mysql_query("SELECT r.id AS id, ip, screen FROM running AS r, server AS s WHERE r.serverid = s.id AND r.hltv_for = '".$row["id"]."' LIMIT 1");
-  if(mysql_num_rows($query) > 0){
-    echo "<div class='meldung_notify'>HLTV gefunden - der wird jetzt auch gekillt.</div><br>";
-    $row_hltv = mysql_fetch_assoc($query);
-    if(!kill_screen($row_hltv["ip"],$row_hltv["screen"])){
-      echo "<div class='meldung_error'>HLTV konnte nicht gestoppt werden.</div><br>";
-    }else{
-      mysql_query("DELETE FROM running WHERE id = '".$row_hltv["id"]."' LIMIT 1");
-      echo "<div class='meldung_ok'>HLTV gekillt.</div><br>";
-    }
-  }
   if(!kill_screen($row["ip"],$row["screen"])){
     echo "<div class='meldung_error'>Server konnte nicht gestoppt werden.</div><br>";
     return false;
@@ -194,7 +172,7 @@ echo $values;
     echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
   }else{
     // Und in die "running"-Tabelle einfuegen
-    mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', hltv_for = '".$hltv_for."', score = '".$game["score"]."', vars = '".$values."'");
+    mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', score = '".$game["score"]."', vars = '".$values."'");
     echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
   }
 }

@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS `games` (
   `defaults` text NOT NULL,
   `start_port` int(11) NOT NULL,
   `score` int(11) NOT NULL,
-  `hltv` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -49,7 +48,6 @@ CREATE TABLE IF NOT EXISTS `running` (
   `serverid` int(10) unsigned NOT NULL,
   `gameid` int(10) unsigned NOT NULL,
   `port` int(11) NOT NULL,
-  `hltv_for` int(11) NOT NULL,
   `score` int(11) NOT NULL,
   `vars` text NOT NULL,
   PRIMARY KEY  (`id`)

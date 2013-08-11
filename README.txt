@@ -20,15 +20,10 @@ Die Admins sind dann diejenigen, die die Server einrichten und administrieren. D
 Featureliste:
  - Einfaches Starten und Stoppen von Gameservern per Webinterface
  - Stoppen mehrerer Gameserver gleichzeitig
- - Starten eines passenden HLTV-Servers durch Klick auf einen Button, direkt am laufenden Gameserver
- - Hinweistexte, für welchen Gameserver der HLTV läuft, und dass für den Gameserver ein HLTV läuft (und wo der läuft)
- - Wird ein Sevrer gestoppt, für den ein HLTV gestartet wurde, wird der HLTV auch gestoppt 
  - Unterschiedliche Berechtigungen
  - Benutzerdefenierte Variablen in den Start-Befehlen für die Gameserver
  - Default-Werte für die benutzerdefenierten Variablen
- - Zuweisung eines passenden HLTV-Befehls zu einem Gameserver
  - Zuweisung der Games zu den Servern -> Games können nur auf den passenden Servern gestartet werden
- - Dadurch kann z.B. auch ein Server nur für HLTV defeniert werden
  - Score-System, damit nicht zu viele Gameserver auf einem Server gestartet werden können
  - Übersicht mit laufenden Servern, Games und Scores, sowie farbliche Anzeige freier und ausgefallener Server
  - Abgeschmierte Gameserver werden farblich markiert
@@ -79,27 +74,23 @@ Games einrichten:
    - Name (Kurzname, ohne sonderzeichen etc - wird für den Screen-Namen benutzt) - z.B. "cs16" oder "css" oder "cod4" oder ...
    - CMD (Befehl zum Starten des Gameservers - hier können Variablen im Format ##varname## benutzt werden)
      - ##port## gibt den Server-Port an - der wird automatisch vergeben beim Starten
-     - ##ip## ist die Server-IP, zu der sich ein HLTV-Server verbinden soll - wird autmatisch gefüllt
      - Ansonsten kann man eigene Variablen vergeben, z.B. ##Servername## für den Namen und ##MaxPlayers## für die Anzahl der Spieler
      - Die eigenen Variablen werden beim Starten alle abgefragt
    - Defaults (Default-Werte für die eigenen(!) Variablen getrennt durch Semikolon ";")
      - Wenn man z.B. ##Servername## und ##MaxPlayers## defeniert hat, kann man als Defaults folgendes angeben: Servername xyz cs Server;11
      - Damit würden die Felder beim Starten automatisch mit "Servername xyz cs Server" und "11" gefüllt werden
      - Wichtig: Die Defaults müssen in der Reihenfolge angegeben werden, in der die variablen im CMD auftauchen
-     - Für ##port## und ##ip## kann man keine Defaults angeben
+     - Für ##port## kann man keine Defaults angeben
    - Startport (Port, ab dem der nächste freie Port für den Server verwendet wird)
    - Score (Score-Wert, die dieses Game kostet)
-   - HLTV (Verknüpfter Befehl zum Starten des HLTV-Serves)
-     - Für HLTV muss zuvor ein "Game" für HLTV angelegt werden - dieses kann hier ausgewählt werden
-     - Für den HLTV-Server kann man im CMD-Feld die Variable ##ip## angeben - die wird mit der Server-IP + Port gefüllt, zu der sich der HLTV verbinden soll
    - Server (Liste der Server, auf denen dieses Game laufen kann)
  - Ein Game kann nur auf den Servern gestartet werden, auf denen das Game zugewiesen ist
 
 Die Sache mit den Scores:
  - Die Server bekommen bestimmte Scores (z.B. 100)
- - Die Games bekommen bestimmte Scores (z.B. cs16 = 20, hltv = 10)
+ - Die Games bekommen bestimmte Scores (z.B. cs16 = 10, css = 20)
  Dann hat der Server 100 Score-Punkte zu verfügung - die Games kosten 20 bzw 10 Score-Punkte
- In diesem Beispiel können also maximal fünf cs16 Gameserver auf dem Server gestartet werden, da 5 x 20 = 100
- Wenn nur vier cs16 Gameserver gestartet werden (4 x 20 = 80) können zusätzlich noch zwei HLTV auf diesem Server gestartet werden (2 x 10 = 20) - Zusammen macht das dann wieder 100
+ In diesem Beispiel können also maximal fünf css Gameserver auf dem Server gestartet werden, da 5 x 20 = 100
+ Wenn nur vier css Gameserver gestartet werden (4 x 20 = 80) können zusätzlich noch zwei cs16 auf diesem Server gestartet werden (2 x 10 = 20) - Zusammen macht das dann wieder 100
  Wenn auf einem Server nicht mehr genug Score-Punkte für ein Gameserver verfügbar sind, steht dieser nicht zur Verfügung.
  Damit kann man die Last der Server automatisch beschränken und kontrollieren.

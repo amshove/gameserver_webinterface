@@ -30,7 +30,6 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
     foreach($old as $o) if($o != $id) $new[] = $o;
     mysql_query("UPDATE server SET games = '".implode(",",$new)."' WHERE id = '".$row["id"]."' LIMIT 1");
   }
-  $query = mysql_query("UPDATE games SET hltv = 0 WHERE hltv = '".$id."'"); // Game als hltv-verweis austragen
   mysql_query("DELETE FROM games WHERE id = '".$id."' LIMIT 1"); // Und loeschen
 }
 
@@ -54,16 +53,15 @@ if($_POST["add"] || $_POST["edit"]){
     $defaults = mysql_real_escape_string($_POST["defaults"]);
     $start_port = mysql_real_escape_string($_POST["start_port"]);
     $score = mysql_real_escape_string($_POST["score"]);
-    $hltv = mysql_real_escape_string($_POST["hltv"]);
     if(is_array($_POST["server"])) $server = $_POST["server"];
     else $server = "";
     if($_POST["add"]){
       // Game anlegen
-      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', score = '".$score."', hltv = '".$hltv."'");
+      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', score = '".$score."'");
       $id = mysql_insert_id();
     }elseif($_POST["edit"]){
       // Game aendern
-      mysql_query("UPDATE games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', score = '".$score."', hltv = '".$hltv."' WHERE id = '".$id."' LIMIT 1");
+      mysql_query("UPDATE games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', score = '".$score."' WHERE id = '".$id."' LIMIT 1");
       $query = get_server_with_game($id);
       while($row = mysql_fetch_assoc($query)){ // Alle Verweise zu dem Game loeschen - werden gleich wiederhergestellt
         $old = explode(",",$row["games"]);
@@ -116,12 +114,12 @@ echo "</select></td>
   <tr>
     <td>CMD:</td>
     <td><input type='text' name='cmd' value='".$value["cmd"]."' size='100'><br>
-        ##port## f&uuml;r den Port, ##ip## f&uuml;r die ServerIP bei HLTV, ##var1## .. f&uuml;r weitere Variablen</td>
+        ##port## f&uuml;r den Port, ##var1## .. f&uuml;r weitere Variablen</td>
   </tr>
   <tr>
     <td>Defaults:</td>
     <td><input type='text' name='defaults' value='".$value["defaults"]."' size='100'><br>
-        In der Reihenfolge der Variablen im CMD (ohne ##port## und ##ip##) - Getrennt durch ;</td>
+        In der Reihenfolge der Variablen im CMD (ohne ##port##) - Getrennt durch ;</td>
   </tr>
   <tr>
     <td>Startport:</td>
@@ -130,17 +128,6 @@ echo "</select></td>
   <tr>
     <td>Score:</td>
     <td><input type='text' name='score' value='".$value["score"]."'></td>
-  </tr>
-  <tr>
-    <td>HLTV:</td>
-    <td><select name='hltv'><option value='0'>-- keiner --</option>";
-$query = mysql_query("SELECT id, name FROM games ORDER BY name");
-while($row = mysql_fetch_assoc($query)){
-  echo "<option value='".$row["id"]."' ";
-  if($value["hltv"] == $row["id"]) echo "selected='selected'";
-  echo ">".$row["name"]."</option>";
-}
-echo "</select></td>
   </tr>
   <tr>
     <td>Server:</td>
@@ -169,7 +156,6 @@ echo "<table>
     <th width='350'>defaults</th>
     <th width='50'>Startport</th>
     <th width='50'>Score</th>
-    <th width='100'>HLTV</th>
     <th width='100'>&nbsp;</th>
   </tr>";
 
@@ -181,9 +167,6 @@ while($row = mysql_fetch_assoc($query)){
     <td>".$row["defaults"]."</td>
     <td>".$row["start_port"]."</td>
     <td>".$row["score"]."</td>
-    <td>";
-  if(!empty($row["hltv"])) echo @mysql_result(mysql_query("SELECT name FROM games WHERE id = '".$row["hltv"]."' LIMIT 1"),0,"name");
-  echo "</td>
     <td align='center'><a href='index.php?page=games&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=games&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Game wirklich l&ouml;schen?\");'>del</a></td>
   </tr>";
 }

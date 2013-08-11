@@ -36,13 +36,6 @@ if($_SESSION["ad_level"] >= 4 && $_GET["cmd"] == "cleanup"){
   }
 }
 
-// Einlesen aller HLTV-Instanzen
-$hltv_running = array();
-$query = mysql_query("SELECT hltv_for, screen, name FROM running AS r, server AS s WHERE r.serverid = s.id AND r.hltv_for > 0 LIMIT 1");
-while($row = mysql_fetch_assoc($query)){
-  $hltv_running[$row["hltv_for"]] = "<u>Es l&auml;uft ein HLTV f&uuml;r diesen Server auf Server <b>".$row["name"]."</b> mit Screen <b>".$row["screen"]."</b><br></u>";
-}
-
 // Cleanup-Link
 if($_SESSION["ad_level"] >= 4) echo "<a href='index.php?cmd=cleanup' title='Gestorbene Server l&ouml;schen'>Cleanup</a>";
 
@@ -83,11 +76,6 @@ foreach($server as $s){
   $scores = 0;
   $query = mysql_query("SELECT * FROM running WHERE serverid = '".$s["id"]."' ORDER BY gameid");
   while($row = mysql_fetch_assoc($query)){ // Games auf dem Server auflisten
-    if(!empty($row["hltv_for"])){ // Ist dies ein HLTV fuer einen Server? dann Hinweis-Text
-      $query2 = mysql_query("SELECT screen, name FROM running AS r, server AS s WHERE r.serverid = s.id AND r.id = '".$row["hltv_for"]."' LIMIT 1");
-      $hltv_text = "<u>HLTV f&uuml;r <b>".@mysql_result($query2,0,"screen")."</b> auf Server <b>".@mysql_result($query2,0,"name")."</b></u><br>";
-    }else $hltv_text = "";
-
     $scores += $row["score"]; // Score addieren fuer die Anzeige
     
     if(!in_array($row["screen"],$screens)) $dead = true; // Wenn Screen in running-Tabelle aber nicht auf Server: gestorben
@@ -101,15 +89,8 @@ foreach($server as $s){
     if($dead) echo "<br><b>gestorben</b>"; // ... und Hinweis
     echo "</a></td>
       <td valign='top'>".$row["screen"]."</td>
-      <td>".$hltv_text.$hltv_running[$row["id"]].$row["vars"]."</td>
+      <td>".$row["vars"]."</td>
       <td valign='top' align='center'>";
-    
-    // Wenn ein HLTV-Verweis vorhanden ist, HLTV-Link anzeigen  
-    $hltv = $games[$row["gameid"]]["hltv"];
-    if(!empty($hltv) && empty($hltv_running[$row["id"]])){ // Wenn schon ein HLTV fuer diesen Server laeuft - nicht anzeigen
-      echo "<a href='index.php?page=anlegen&game=".$hltv."&ip=".$s["ip"].":".$row["port"]."&hltv_for=".$row["id"]."'><img src='icons/".$games[$hltv]["icon"]."' height='$image_height'></a><br>";
-    }
-    
     echo "<a href='index.php?cmd=kill&id=".$row["id"]."' onClick='return confirm(\"Server wirklich killen?\");'>kill</a></td>
     </tr>";
   }
