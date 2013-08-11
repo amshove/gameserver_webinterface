@@ -69,7 +69,7 @@ foreach($server as $s){
       <th width='50'>Game</th>
       <th width='100'>Screen</th>
       <th width='500'>Variablen</th>
-      <th width='50'>&nbsp;</th>
+      <th width='100'>&nbsp;</th>
     </tr>";
   echo "<form id='form_$i' method='POST' action='index.php'>";
   $screens = list_screens($s); // Laufende Screen einlesen
@@ -91,8 +91,9 @@ foreach($server as $s){
       <td valign='top'>".$row["screen"]."</td>
       <td>".$row["vars"]."</td>
       <td valign='top' align='center'>";
-    echo "<a href='index.php?cmd=kill&id=".$row["id"]."' onClick='return confirm(\"Server wirklich killen?\");'>kill</a></td>
-    </tr>";
+    echo "<a href='index.php?cmd=restart&id=".$row["id"]."' onClick='return confirm(\"Server wirklich restarten?\");'>restart</a> | ";
+    echo "<a href='index.php?cmd=kill&id=".$row["id"]."' onClick='return confirm(\"Server wirklich killen?\");'>kill</a>";
+    echo "</td></tr>";
   }
   echo "</table>";
   echo "Score: $scores von ".$s["score"]." belegt - ".($s["score"] - $scores)." noch frei<br>"; // Scores

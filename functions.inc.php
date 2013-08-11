@@ -116,6 +116,7 @@ function kill_server($running_id){
   $running = mysql_fetch_assoc($query);
   $query = mysql_query("SELECT * FROM server WHERE id = '".$running["serverid"]."' LIMIT 1");
   $server = mysql_fetch_assoc($query);
+
   if(!kill_screen($server,$running["screen"])){
     echo "<div class='meldung_error'>Server konnte nicht gestoppt werden.</div><br>";
   }else{
@@ -126,55 +127,24 @@ function kill_server($running_id){
 
 // Funktion zum restarten eines Gameservers
 function restart_server($running_id){
-// TODO
-  $query = mysql_query("SELECT r.id AS id, ip, screen FROM running AS r, server AS s WHERE r.serverid = s.id AND r.id = '".$running_id."' LIMIT 1");
-  $row = mysql_fetch_assoc($query);
-  $gameid = $row["gameid"];
-echo mysql_error();
-  $serverid = $row["serverid"];
-  $port = $row["port"];
-  $vars = $row["vars"];
-echo print_r($row);
-  if(!kill_screen($row["ip"],$row["screen"])){
+  $query = mysql_query("SELECT * FROM running WHERE id = '".$running_id."' LIMIT 1");
+  $running = mysql_fetch_assoc($query);
+  $query = mysql_query("SELECT * FROM server WHERE id = '".$running["serverid"]."' LIMIT 1");
+  $server = mysql_fetch_assoc($query);
+
+  if(!kill_screen($server,$running["screen"])){
     echo "<div class='meldung_error'>Server konnte nicht gestoppt werden.</div><br>";
     return false;
   }else{
-    mysql_query("DELETE FROM running WHERE id = '".$row["id"]."' LIMIT 1");
     echo "<div class='meldung_ok'>Server gekillt.</div><br>";
   }
 
   // Game starten
-  $query = mysql_query("SELECT * FROM games WHERE id = '".$gameid."' LIMIT 1");
+  $query = mysql_query("SELECT * FROM games WHERE id = '".$running["gameid"]."' LIMIT 1");
   $game = mysql_fetch_assoc($query);
-  $query = mysql_query("SELECT * FROM server WHERE id = '".$serverid."' LIMIT 1");
-  $server = mysql_fetch_assoc($query);
-  $port = $port;
-
-  $old_vars = array();
-  $tmp = explode("<br>",$vars);
-  foreach($tmp as $tmp2){
-    $tmp3 = explode(" => ",$tmp2);
-    $old_vars[$tmp3[0]] = $tmp3[1];
-  }
-
-  $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
-  $cmd = str_replace("##port##",$port,$game["cmd"]);
-echo $cmd;
-  $values = "port => $port<br>";
-  foreach($vars as $v){
-    // Variablen durch Werte ersetzen
-    $cmd = str_replace($v,$old_vars[$v],$cmd);
-    $values .= substr($v,2,-2)." => ".$old_vars[$v]."<br>";
-  }
-echo $cmd;
-echo $values;
-  if($_SESSION["ad_level"] >= 4) echo "<div class='meldung_notify'><b>CMD:</b> $cmd</div><br>"; // Fuer Admins wird der Befehl mit angezeigt
-  $screen = $game["name"]."_".$port;
-  if(!starte_cmd($server,$cmd,$screen,$game["folder"])){ // Server starten ...
+  if(!starte_cmd($server,$running["cmd"],$running["screen"],$game["folder"])){ // Server starten ...
     echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
   }else{
-    // Und in die "running"-Tabelle einfuegen
-    mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', score = '".$game["score"]."', vars = '".$values."'");
     echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
   }
 }
