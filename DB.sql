@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `running` (
   `screen` varchar(200) NOT NULL,
   `serverid` int(10) unsigned NOT NULL,
   `gameid` int(10) unsigned NOT NULL,
+  `cmd` text NOT NULL,
   `port` int(11) NOT NULL,
   `score` int(11) NOT NULL,
   `vars` text NOT NULL,
@@ -68,8 +69,10 @@ CREATE TABLE IF NOT EXISTS `server` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(200) NOT NULL,
   `ip` varchar(15) NOT NULL,
+  `user` varchar(200) NOT NULL,
   `games` varchar(200) NOT NULL,
   `score` int(11) NOT NULL,
+  `notes` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

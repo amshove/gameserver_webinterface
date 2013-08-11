@@ -51,15 +51,16 @@ if($_POST["add"] || $_POST["edit"]){
     $ip = mysql_real_escape_string($_POST["ip"]);
     $user = mysql_real_escape_string($_POST["user"]);
     $score = mysql_real_escape_string($_POST["score"]);
+    $notes = mysql_real_escape_string($_POST["notes"]);
     if(is_array($_POST["games"])) $games = mysql_real_escape_string(implode(",",$_POST["games"]));
     else $games = "";
     if($_POST["add"]){
       // Server hinzufuegen
-      mysql_query("INSERT INTO server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."'");
+      mysql_query("INSERT INTO server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."', notes = '$notes'");
       echo "<div class='meldung_ok'>Server eingetragen</div><br><div class='meldung_notify'><b>NICHT VERGESSEN:</b> der SSH-Key muss eingespielt werden - siehe ganz unten</div><br>";
     }elseif($_POST["edit"]){
       // Server aendern
-      mysql_query("UPDATE server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."' WHERE id = '".$id."' LIMIT 1");
+      mysql_query("UPDATE server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."', notes = '$notes' WHERE id = '".$id."' LIMIT 1");
     }
   }
 }
@@ -105,6 +106,10 @@ echo "</select></td>
     <td><input type='text' name='score' value='".$value["score"]."'></td>
   </tr>
   <tr>
+    <td>Notizen:</td>
+    <td><textarea name='notes'>".$value["notes"]."</textarea></td>
+  </tr>
+  <tr>
     <td colspan='2' align='center'><input type='submit' name='".$submit_name."' value='".$submit_value."'></td>
   </tr>
 </table>
@@ -120,6 +125,7 @@ echo "<table>
     <th width='200'>Name</th>
     <th width='200'>Games</th>
     <th width='50'>Score</th>
+    <th width='200'>Notizen</th>
     <th width='200'>&nbsp;</th>
   </tr>";
 
@@ -132,7 +138,7 @@ while($row = mysql_fetch_assoc($query)){
 
   echo "<tr>
     <td style='background-color: $ping_color;'>&nbsp;</td>
-    <td style='background-color: $login_color;'>".$row["user"]."</td>
+    <td valign='top' style='background-color: $login_color;'>".$row["user"]."</td>
     <td valign='top' title='".$row["ip"]."'>".$row["name"]."</td>
     <td valign='top'>";
   foreach(explode(",",$row["games"]) as $g){
@@ -140,6 +146,7 @@ while($row = mysql_fetch_assoc($query)){
   }
   echo "</td>
     <td valign='top'>".$row["score"]."</td>
+    <td valign='top'>".nl2br($row["notes"])."</td>
     <td valign='top' align='center'><a href='index.php?page=server&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=server&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Server wirklich l&ouml;schen?\");'>del</a>&nbsp;&nbsp;--&nbsp;&nbsp;
     <a href='index.php?page=server&cmd=reboot&id=".$row["id"]."' onClick='return confirm(\"Server wirklich rebooten?\");'>reboot</a> | <a href='index.php?page=server&cmd=shutdown&id=".$row["id"]."' onClick='return confirm(\"Server wirklich herunterfahren?\");'>shutdown</a></td>
   </tr>";
