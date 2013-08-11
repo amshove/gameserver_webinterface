@@ -38,7 +38,7 @@ if($_POST["anlegen"]){
 // Auflisten der Games
 $query = mysql_query("SELECT id, icon, name FROM games ORDER BY name");
 while($row = mysql_fetch_assoc($query)){
-  echo "<a href='index.php?page=anlegen&game=".$row["id"]."'><img src='icons/".$row["icon"]."' height='$image_height'> ".$row["name"]."</a><br>";
+  echo "<a href='index.php?page=anlegen&game=".$row["id"]."'><img src='images/".$row["icon"]."' height='$image_height'> ".$row["name"]."</a><br>";
 }
 
 echo "<br>";

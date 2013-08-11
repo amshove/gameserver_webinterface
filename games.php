@@ -94,7 +94,7 @@ echo "<form action='index.php?page=games' method='POST' id='formular' style='dis
   <tr>
     <td width='50'>Icon:</td>
     <td><select name='icon'>";
-$icons = scandir("icons");
+$icons = scandir("images");
 foreach($icons as $i){
   if($i == "." || $i == ".." || $i == ".svn") continue;
   echo "<option ";
@@ -162,7 +162,7 @@ echo "<table>
 $query = mysql_query("SELECT * FROM games ORDER BY name");
 while($row = mysql_fetch_assoc($query)){
   echo "<tr>
-    <td align='center'><img src='icons/".$row["icon"]."' height='$image_height'></td>
+    <td align='center'><img src='images/".$row["icon"]."' height='$image_height'></td>
     <td>".$row["name"]."</td>
     <td>".$row["defaults"]."</td>
     <td>".$row["start_port"]."</td>

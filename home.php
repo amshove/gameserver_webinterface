@@ -85,7 +85,7 @@ foreach($server as $s){
     if($dead) echo "style='background-color: #CC9999;'"; // Wenn gestorben, farbe anpassen ...
     echo ">";
     echo "<td valign='top'><input type='checkbox' name='kill[]' value='".$row["id"]."'></td>
-      <td align='center' valign='top'><a href='hlsw://".$s["ip"].":".$row["port"]."'><img border=0 src='icons/".$games[$row["gameid"]]["icon"]."' height='$image_height'><br>".$games[$row["gameid"]]["name"];
+      <td align='center' valign='top'><a href='hlsw://".$s["ip"].":".$row["port"]."'><img border=0 src='images/".$games[$row["gameid"]]["icon"]."' height='$image_height'><br>".$games[$row["gameid"]]["name"];
     if($dead) echo "<br><b>gestorben</b>"; // ... und Hinweis
     echo "</a></td>
       <td valign='top'>".$row["screen"]."</td>

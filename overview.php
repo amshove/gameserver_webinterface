@@ -53,7 +53,7 @@ foreach($server as $s){
     $num = $s["running"][$g];
     if(empty($num)) $num = 0;
     echo "  <td width='20'>".$num."x</td>";
-    echo "  <td><img src='icons/".$games[$g]["icon"]."' title='".$games[$g]['name']."' height='$image_height'></td>";
+    echo "  <td><img src='images/".$games[$g]["icon"]."' title='".$games[$g]['name']."' height='$image_height'></td>";
     echo "</tr>";
   }
   if($s["online"]){ // Score-Anzeige nur wenn online
@@ -73,7 +73,7 @@ echo "<br></td><td valign='top' align='center'>";
 foreach($games as $g){
   echo "<br><table>";
   echo "  <tr>";
-  echo "    <th colspan='2' width='100'><img src='icons/".$g["icon"]."' height='$image_height'> ".$g["name"]."</th>";
+  echo "    <th colspan='2' width='100'><img src='images/".$g["icon"]."' height='$image_height'> ".$g["name"]."</th>";
   echo "  </tr>";
   $query = mysql_query("SELECT COUNT(r.id) AS count, s.name AS name FROM running AS r, server AS s WHERE r.serverid = s.id AND r.gameid = '".$g["id"]."' GROUP BY s.name ORDER BY s.name");
   while($row = mysql_fetch_assoc($query)){ // Server auflisten

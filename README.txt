@@ -49,7 +49,7 @@ Featureliste:
 7) Seite aufrufen
  - User: superadmin
  - PW: default
-8) Game-Icons besorgen und nach icons/ hochladen
+8) Game-Icons besorgen und nach images/ hochladen
 
 
 ################
@@ -70,7 +70,7 @@ Server einrichten:
    
 Games einrichten:
  - Einzugeben ist:
-   - Icon (Auflistung aller Dateien unter "icons/")
+   - Icon (Auflistung aller Dateien unter "images/")
    - Name (Kurzname, ohne sonderzeichen etc - wird für den Screen-Namen benutzt) - z.B. "cs16" oder "css" oder "cod4" oder ...
    - CMD (Befehl zum Starten des Gameservers - hier können Variablen im Format ##varname## benutzt werden)
      - ##port## gibt den Server-Port an - der wird automatisch vergeben beim Starten

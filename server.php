@@ -136,7 +136,7 @@ while($row = mysql_fetch_assoc($query)){
     <td valign='top' title='".$row["ip"]."'>".$row["name"]."</td>
     <td valign='top'>";
   foreach(explode(",",$row["games"]) as $g){
-    echo "<img src='icons/".$games[$g]["icon"]."' title='".$games[$g]["name"]."' height='$image_height'> ";
+    echo "<img src='images/".$games[$g]["icon"]."' title='".$games[$g]["name"]."' height='$image_height'> ";
   }
   echo "</td>
     <td valign='top'>".$row["score"]."</td>
