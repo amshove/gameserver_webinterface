@@ -7,9 +7,9 @@ Das Gameserver Webinterface ist dafür gedacht, auf einer LAN-Party bestimmte Gam
 Vorteil daran ist, man kann das Webinterface für etliche Server nutzen und muss nicht für jeden Server einzeln auf die Konsole gehen.
 Außerdem kann die Webseite z.B. an den Turnier-Support übergeben werden, damit diese ohne Linux- und Server-Kenntnisse mit einem Knopfdruck Gameserver bereitstellen können.
 Deswegen auch die unterschiedlichen Rechte für die Benutzer:
- - User       - darf Server anlegen, killen und sich die Übersicht angucken
- - Admin      - darf zusätzlich Server und Games einrichten - und darf unter "home" die Liste von gestorbenen Servern aufräumen - und ihm werden weitere Informationen angezeigt (z.B. beim Starten der Befehl, der ausgeführt wird) - und er darf die Server rebooten und herunterfahren
- - Superadmin - darf zusätzlich User anlegen und editieren
+ - **User** - darf Server anlegen, killen und sich die Übersicht angucken
+ - **Admin** - darf zusätzlich Server und Games einrichten - und darf unter "home" die Liste von gestorbenen Servern aufräumen - und ihm werden weitere Informationen angezeigt (z.B. beim Starten der Befehl, der ausgeführt wird) - und er darf die Server rebooten und herunterfahren
+ - **Superadmin** - darf zusätzlich User anlegen und editieren
 Dabei richtet sich der User an den Typischen Turnier-Support, der Gameserver bereitstellt, aber nichts mit den eigentlichen Servern zu tun hat. Dank des Score-Systems braucht der User kein Hintergrundwissen - Wenn er ein Gameserver starten will, werden ihm nur Server zur Auswahl gegeben, auf denen das Game auch läuft, auf denen noch genug Ressourcen frei sind und die erreichbar sind.
 Die Admins sind dann diejenigen, die die Server einrichten und administrieren. Der Cleanup z.B. darf nur von diesen ausgeführt werden, damit sie die Möglichkeit haben, nach Ursachen zu forschen.
 Übrigens: Beim Anlegen eines Users kann kein Passwort gesetzt werden - es wird ein default-Passwort gesetzt, was beim Anmelden vom User geändert werden muss.
@@ -72,7 +72,8 @@ Einrichtung
 
 ### Die Sache mit den Scores
  - Die Server bekommen bestimmte Scores (z.B. 100)
- - Die Games bekommen bestimmte Scores (z.B. cs16 = 10, css = 20)
+ - Die Games bekommen bestimmte Scores (z.B. cs16 = 10, css = 20)  
+
  Dann hat der Server 100 Score-Punkte zu verfügung - die Games kosten 20 bzw 10 Score-Punkte
  In diesem Beispiel können also maximal fünf css Gameserver auf dem Server gestartet werden, da 5 x 20 = 100
  Wenn nur vier css Gameserver gestartet werden (4 x 20 = 80) können zusätzlich noch zwei cs16 auf diesem Server gestartet werden (2 x 10 = 20) - Zusammen macht das dann wieder 100
