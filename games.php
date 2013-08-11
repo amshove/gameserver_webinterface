@@ -31,9 +31,61 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
     mysql_query("UPDATE server SET games = '".implode(",",$new)."' WHERE id = '".$row["id"]."' LIMIT 1");
   }
   mysql_query("DELETE FROM games WHERE id = '".$id."' LIMIT 1"); // Und loeschen
+}elseif($_GET["cmd"] == "sync" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
+  // Game Syncen - Formular
+  $server = array();
+  $query = get_server_with_game(mysql_real_escape_string($_GET["id"]));
+  while($row = mysql_fetch_assoc($query)) $server[] = $row;
+
+  echo "<form action='index.php?page=games' method='POST'>";
+  echo "<input type='hidden' name='gameid' value='".$_GET["id"]."'>";
+  echo "<table width='200'>";
+  echo "  <tr>";
+  echo "    <th colspan='2'>Game-Files auf Server syncen</th>";
+  echo "  </tr>";
+  echo "  <tr>";
+  echo "    <td>Quell-Server:</td>";
+  echo "    <td><select name='src'>";
+  foreach($server as $s) echo "<option value='".$s["id"]."'>".$s["name"]."</option>";
+  echo "    </select></td>";
+  echo "  </tr>";
+  echo "  <tr>";
+  echo "    <td valign='top'>Ziel-Server:</td>";
+  echo "    <td><select name='dst[]' size='5' multiple>";
+  foreach($server as $s) echo "<option value='".$s["id"]."'>".$s["name"]."</option>";
+  echo "    </select></td>";
+  echo "  </tr>";
+  echo "  <tr>";
+  echo "    <td colspan='2'><input type='submit' name='sync' value='Sync starten'></td>";
+  echo "  </tr>";
+  echo "</table>";
+  echo "</form><br><br>";
+}elseif($_POST["sync"]){
+  // Game Syncen - Prozesse starten
+  $game = mysql_fetch_assoc(mysql_query("SELECT * FROM games WHERE id = '".mysql_real_escape_string($_POST["gameid"])."' LIMIT 1"));
+  $server = array();
+  $query = get_server_with_game(mysql_real_escape_string($_POST["gameid"]));
+  while($row = mysql_fetch_assoc($query)) $server[$row["id"]] = $row;
+
+  if(!$server[$_POST["src"]]) echo "<div class='meldung_error'>Quell-Server wurde nicht gefunden.</div><br>";
+  else{
+    $src = $server[$_POST["src"]];
+    $dst = array();
+    if(is_array($_POST["dst"])){
+      foreach($_POST["dst"] as $d){
+        if($d != $_POST["src"] && $server[$d]) $dst[] = $server[$d];
+      }
+    }elseif($server[$_POST["dst"]]) $dst[] = $server[$_POST["dst"]];
+    else{
+      echo "<div class='meldung_error'>Keinen Ziel-Server gefunden.</div><br>";
+      $error = true;
+    }
+
+    if(!$error) foreach($dst as $d) sync_game($src,$d,$game);
+  }
 }
 
-// Formular wurde abgeschickt
+// Add/Edit Formular wurde abgeschickt
 if($_POST["add"] || $_POST["edit"]){
   if(empty($_POST["name"]) || empty($_POST["cmd"])){ // Name und cmd duerfen nicht leer sein
     echo "<div class='meldung_error'>Name und CMD m&uuml;ssen angegeben werden!</div><br>";
@@ -167,10 +219,26 @@ while($row = mysql_fetch_assoc($query)){
     <td>".$row["defaults"]."</td>
     <td>".$row["start_port"]."</td>
     <td>".$row["score"]."</td>
-    <td align='center'><a href='index.php?page=games&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=games&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Game wirklich l&ouml;schen?\");'>del</a></td>
+    <td align='center'><a href='index.php?page=games&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=games&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Game wirklich l&ouml;schen?\");'>del</a> | <a href='index.php?page=games&cmd=sync&id=".$row["id"]."'>sync</a></td>
   </tr>";
 }
 
 echo "</table>";
+
+echo "<br><br>";
+
+$syncs = sync_list();
+if(count($syncs) > 1){
+  echo "<table>";
+  echo "  <tr>";
+  echo "    <th width='300'>Aktive Sync-Prozesse:</th>";
+  echo "  </tr>";
+  foreach($syncs as $s){
+    echo "<tr>";
+    echo "  <td>$s</td>";
+    echo "</tr>";
+  }
+  echo "</table>";
+}
 }
 ?>

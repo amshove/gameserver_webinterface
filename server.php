@@ -71,7 +71,7 @@ if($_POST["add"] || $_POST["edit"]){
     else $games = "";
     if($_POST["add"]){
       // Server hinzufuegen
-      mysql_query("INSERT INTO server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."', notes = '$notes'");
+      mysql_query("INSERT INTO server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."', notes = '$notes', active = '1'");
       echo "<div class='meldung_ok'>Server eingetragen</div><br><div class='meldung_notify'><b>NICHT VERGESSEN:</b> Damit das Webinterface Zugang zum Server bekommt, bitte auf \"Zugang einrichten\" des jeweiligen Servers klicken.</div><br>";
     }elseif($_POST["edit"]){
       // Server aendern

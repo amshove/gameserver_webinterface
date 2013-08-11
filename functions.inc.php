@@ -237,4 +237,41 @@ function shutdown_server($server){
   exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"sudo shutdown -h now\"");
   echo "<div class='meldung_ok'>Shutdown an den Server <b>".$server["name"]."</b> gesendet.</div><br>";
 }
+
+// Funktion zum Syncen von games
+function sync_game($src_server,$dst_server,$game){
+  global $ssh_priv_key;
+
+  $src_dir = $game["folder"];
+  if(substr($src_dir, -1) == "/") $src_dir = substr($src_dir,0,-1);
+  $dst_dir = substr($src_dir,0,strrpos($src_dir,"/"));
+
+  // Script zum Syncen erstellen
+  $script = tempnam("/tmp","gswi_sync_");
+  $file = fopen($script,"w");
+  fwrite($file,"#!/bin/bash\n");
+  fwrite($file,"ssh-add $ssh_priv_key\n");
+  fwrite($file,"ssh -o ForwardAgent=yes -o StrictHostKeyChecking=no ".$src_server["user"]."@".$src_server["ip"]." \"rsync -a --delete -e 'ssh -o StrictHostKeyChecking=no' $src_dir ".$dst_server["user"]."@".$dst_server["ip"].":$dst_dir\"\n");
+  fwrite($file,"rm $script");
+  fclose($file);
+
+  chmod($script,0700);
+
+  // Script mit ssh-agent starten, um den Key weiterzuleiten
+  exec("screen -dmS sync_".$game["name"]."_from_".$src_server["name"]."_to_".$dst_server["name"]." ssh-agent $script",$retarr,$rc);
+  if($rc != 0){
+    echo "<div class='meldung_error'>Der Sync-Prozess konnte nicht gestartet werden:<br>";
+    foreach($retarr as $line) echo $line."<br>";
+    echo "</div><br>";
+    return false;
+  }
+  echo "<div class='meldung_ok'>Sync des Games ".$game["name"]." von ".$src_server["name"]." nach ".$dst_server["name"]." gestartet.</div><br>";
+}
+
+// Funktion zum Auflisten aller Sync-Prozesse
+function sync_list(){
+  exec("ls -1 /var/run/screen/S-`id -un` | cut -d . -f 2 | grep ^sync",$retarr,$rc);
+  if($rc != 0) return false;
+  else return $retarr;
+}
 ?>
