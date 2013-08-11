@@ -11,6 +11,9 @@ $ad_level = array(
   5 => "Superadmin"
 );
 
+// SSH-Befehl, mit dem die Verbindung aufgebaut 
+$ssh_string = "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=1 -i $ssh_priv_key";
+
 // Mit MySQL verbinden
 mysql_connect($mysql_host,$mysql_user,$mysql_pw) or die(mysql_error());
 mysql_select_db($mysql_db) or die(mysql_error());

@@ -87,8 +87,17 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
 
 // Add/Edit Formular wurde abgeschickt
 if($_POST["add"] || $_POST["edit"]){
+  $error = false;
+
   if(empty($_POST["name"]) || empty($_POST["cmd"])){ // Name und cmd duerfen nicht leer sein
     echo "<div class='meldung_error'>Name und CMD m&uuml;ssen angegeben werden!</div><br>";
+    $error = true;
+  }elseif(!preg_match("/^[a-zA-Z0-9]*$/",$_POST["name"])){ // Name ueberpruefen
+    echo "<div class='meldung_error'>Der Name darf nur aus Buchstaben und Zahlen bestehen!</div><br>";
+    $error = true;
+  }
+
+  if($error){
     $display = "block";
     $value = $_POST;
     if($_POST["edit"]){

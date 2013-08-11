@@ -1,11 +1,8 @@
-############################################################
-# Gameserver Webinterface                                  #
-# Copyright (C) 2010 Torsten Amshove <torsten@amshove.net> #
-############################################################
+Gameserver Webinterface
+=======================
 
-################
-# Features     #
-################
+Features
+--------
 Das Gameserver Webinterface ist dafür gedacht, auf einer LAN-Party bestimmte Gameserver (CS, COD, ..) auf Linux-Servern zu starten.
 Vorteil daran ist, man kann das Webinterface für etliche Server nutzen und muss nicht für jeden Server einzeln auf die Konsole gehen.
 Außerdem kann die Webseite z.B. an den Turnier-Support übergeben werden, damit diese ohne Linux- und Server-Kenntnisse mit einem Knopfdruck Gameserver bereitstellen können.
@@ -31,46 +28,34 @@ Featureliste:
  - Alle Gameserver werden mit dem Programm "screen" gestartet
  - Passwortlose SSH-Verbindung vom Webinterface per SSH-Key auf die Server
  - Herunterfahren und rebooten einzelner oder aller Server (Linux shutdown)
+ - Syncronisieren einer Gameserver-Installation auf beliebige andere Server (Nur ein Server muss aktualisiert werden - danach syncen)
 
 
-################
-# Installation #
-################
+Installation
+------------
 1) Daten in das htdocs Verzeichnis entpacken
-2) SSH-Keys erzeugen:
- > ssh-keygen
-3) Privaten SSH-Key (id_rsa / id_dsa) verschieben in einen Ordner, an den der Webserver-User dran kommt
-4) Den öffentlichen Schlüssel (id_rsa.pub / id_dsa.pub) öffnen und die Zeile in die Zwischenablage kopieren (ist nur EINE Zeile! wichtig!)
+2) SSH-Keys erzeugen (Passphrase leer lassen):
+ > ssh-keygen -f /etc/apache2/ssh_key_gswi
+ > chown www-data:www-data /etc/apache2/ssh_key_gswi
 5) config.inc.php anpassen
  - MySQL-Daten anpassen
- - Priv-SSH-Key-Pfad anpassen
- - Publ-SSH-Key eintragen (den kopierten)
 6) DB-Struktur einspielen: DB.sql
+ - mysql -u mysql_user -p mysql_db < DB.sql
 7) Seite aufrufen
  - User: superadmin
  - PW: default
-8) Game-Icons besorgen und nach images/ hochladen
 
 
-################
-# Einrichtung  #
-################
+Einrichtung 
+-----------
 Server einrichten:
- - Hier gibt man Name, IP und Score an
+ - Hier gibt man Name, IP, User und Score an
  - Wenn schon Games vorhanden sind, kann man dem Server games zuweisen - nur diese Games können dann auch auf dem Server gestartet werden
- - WICHTIG:
-   - Der SSH-Key, der auf der Seite angezeigt wird muss auf dem Gameserver für den User eingespielt werden:
-   - Der Key muss in die Datei ~/.ssh/authorized_keys - die muss angelegt werden, wenn noch nicht vorhanden
-   - Wichtig: Das ist nur eine lange Zeile - das darf auch nur eine sein!
- - TROUBLESHOOTING:
-   - Testen kann man die Verbindung, indem man auf dem Server mit dem Webinterface als root folgendes eingibt:
-    > sudo -u <Webserver-User> ssh -i </pfad/zum/ssh_key> <User>@<IP_zu_Zielserver>
-   - Wichtig ist, dass der SSH-Key auf dem Server mit dem Webinterface dem User gehört, unter dem der Webserver läuft
-   - Und die Rechte müssen auf 600 bleiben, sonst verweigert SSH die Benutzung
+ - Nach dem Hinzufuegen des Servers, in der Tabelle auf "Zugriff einrichten" klicken - danach kann das Webinterface auf den Server zugreifen
    
 Games einrichten:
  - Einzugeben ist:
-   - Icon (Auflistung aller Dateien unter "images/")
+   - Icon (Auflistung aller Dateien im Ordner "images/")
    - Name (Kurzname, ohne sonderzeichen etc - wird für den Screen-Namen benutzt) - z.B. "cs16" oder "css" oder "cod4" oder ...
    - CMD (Befehl zum Starten des Gameservers - hier können Variablen im Format ##varname## benutzt werden)
      - ##port## gibt den Server-Port an - der wird automatisch vergeben beim Starten
