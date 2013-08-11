@@ -29,7 +29,7 @@ Featureliste:
  - Abgeschmierte Gameserver werden farblich markiert
  - Nicht erreichbare Server werden farblich markiert und stehen nicht zum Starten von Games zur Verfügung
  - Alle Gameserver werden mit dem Programm "screen" gestartet
- - Passwortlose SSH-Verbindung vom Webinterface per SSH-Key auf die Server (als User root)
+ - Passwortlose SSH-Verbindung vom Webinterface per SSH-Key auf die Server
  - Herunterfahren und rebooten einzelner oder aller Server (Linux shutdown)
 
 
@@ -59,12 +59,12 @@ Server einrichten:
  - Hier gibt man Name, IP und Score an
  - Wenn schon Games vorhanden sind, kann man dem Server games zuweisen - nur diese Games können dann auch auf dem Server gestartet werden
  - WICHTIG:
-   - Der SSH-Key, der auf der Seite angezeigt wird muss auf dem Gameserver für den User root eingespielt werden:
-   - Der Key muss in die Datei /root/.ssh/authorized_keys - die muss angelegt werden, wenn noch nicht vorhanden
+   - Der SSH-Key, der auf der Seite angezeigt wird muss auf dem Gameserver für den User eingespielt werden:
+   - Der Key muss in die Datei ~/.ssh/authorized_keys - die muss angelegt werden, wenn noch nicht vorhanden
    - Wichtig: Das ist nur eine lange Zeile - das darf auch nur eine sein!
  - TROUBLESHOOTING:
    - Testen kann man die Verbindung, indem man auf dem Server mit dem Webinterface als root folgendes eingibt:
-    > sudo -u <Webserver-User> ssh -i </pfad/zum/ssh_key> root@<IP_zu_Zielserver>
+    > sudo -u <Webserver-User> ssh -i </pfad/zum/ssh_key> <User>@<IP_zu_Zielserver>
    - Wichtig ist, dass der SSH-Key auf dem Server mit dem Webinterface dem User gehört, unter dem der Webserver läuft
    - Und die Rechte müssen auf 600 bleiben, sonst verweigert SSH die Benutzung
    

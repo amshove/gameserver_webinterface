@@ -17,7 +17,7 @@ while($row = mysql_fetch_assoc($query)) $games[$row["id"]] = $row;
 if($_SESSION["ad_level"] >= 4 && $_GET["cmd"] == "cleanup"){
   // Cleanup - gestorbene Screens aus der "running"-Tabelle loeschen
   foreach($server as $s){
-    $tmp = list_screens($s["ip"]);
+    $tmp = list_screens($s);
     $query = mysql_query("SELECT id, screen FROM running WHERE serverid = '".$s["id"]."'");
     while($row = mysql_fetch_assoc($query)){
       if(!in_array($row["screen"],$tmp)) mysql_query("DELETE FROM running WHERE id = '".$row["id"]."' LIMIT 1");
@@ -60,7 +60,7 @@ function checkAll(i){
 // Tabellen
 $i=0;
 foreach($server as $s){
-  if(host_online($s["ip"])) $server_color = "#00FF00"; // Server online? farbe anpassen
+  if(host_check_login($s)) $server_color = "#00FF00"; // Server online? farbe anpassen
   else $server_color = "#FF0000";
   echo "<h3 style='background-color: $server_color; width: 150px'>&nbsp;".$s["name"].".lan (".$s["ip"].")</h3>";
   echo "<table>
@@ -72,7 +72,7 @@ foreach($server as $s){
       <th width='50'>&nbsp;</th>
     </tr>";
   echo "<form id='form_$i' method='POST' action='index.php'>";
-  $screens = list_screens($s["ip"]); // Laufende Screen einlesen
+  $screens = list_screens($s); // Laufende Screen einlesen
   $scores = 0;
   $query = mysql_query("SELECT * FROM running WHERE serverid = '".$s["id"]."' ORDER BY gameid");
   while($row = mysql_fetch_assoc($query)){ // Games auf dem Server auflisten

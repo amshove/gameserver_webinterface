@@ -12,7 +12,7 @@ $server = array();
 $query = mysql_query("SELECT * FROM server ORDER BY name");
 while($row = mysql_fetch_assoc($query)){
   $server[$i] = $row;
-  $server[$i]["online"] = host_online($row["ip"]); // Server online?
+  $server[$i]["online"] = host_check_login($row); // Server online?
   $query2 = mysql_query("SELECT * FROM running WHERE serverid = '".$row["id"]."'");
   while($row2 = mysql_fetch_assoc($query2)){ // Was laeuft auf dem Server?
     $server[$i]["running"][$row2["gameid"]] += 1;

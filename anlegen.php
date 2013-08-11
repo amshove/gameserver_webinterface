@@ -12,7 +12,7 @@ if($_POST["anlegen"]){
   $game = mysql_fetch_assoc($query);
   $query = mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_POST["server"])."' LIMIT 1");
   $server = mysql_fetch_assoc($query);
-  $port = get_port($server["ip"],$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
+  $port = get_port($server,$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
   if(!$port) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
   else{
     $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
@@ -25,7 +25,7 @@ if($_POST["anlegen"]){
     }
     if($_SESSION["ad_level"] >= 4) echo "<div class='meldung_notify'><b>CMD:</b> $cmd</div><br>"; // Fuer Admins wird der Befehl mit angezeigt
     $screen = $game["name"]."_".$port;
-    if(!starte_cmd($server["ip"],$cmd,$screen,$game["folder"])){ // Server starten ...
+    if(!starte_cmd($server,$cmd,$screen,$game["folder"])){ // Server starten ...
       echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
     }else{
       // Und in die "running"-Tabelle einfuegen
@@ -55,7 +55,7 @@ if($_GET["game"]){
       <td><select name='server'>";
 $query = get_server_with_game($game["id"]); // Zeigt nur die Server an, auf denen das Game laeuft ...
 while($row = mysql_fetch_assoc($query)){
-  if(host_online($row["ip"])){ // ... und auch nur wenn der Server online ist
+  if(host_check_login($row)){ // ... und auch nur wenn der Server online ist
     echo "<option value='".$row["id"]."' ";
     $score_used = @mysql_result(mysql_query("SELECT SUM(score) AS score FROM running GROUP BY serverid HAVING serverid = '".$row["id"]."'"),0,"score");
     if(($row["score"]-$score_used) < $game["score"]) echo "disabled"; // Wenn der Score zu hoch ist, Server ausgrauen
