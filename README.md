@@ -14,7 +14,7 @@ Dabei richtet sich der User an den Typischen Turnier-Support, der Gameserver ber
 Die Admins sind dann diejenigen, die die Server einrichten und administrieren. Der Cleanup z.B. darf nur von diesen ausgeführt werden, damit sie die Möglichkeit haben, nach Ursachen zu forschen.
 Übrigens: Beim Anlegen eines Users kann kein Passwort gesetzt werden - es wird ein default-Passwort gesetzt, was beim Anmelden vom User geändert werden muss.
 
-Featureliste:
+### Featureliste
  - Einfaches Starten und Stoppen von Gameservern per Webinterface
  - Stoppen mehrerer Gameserver gleichzeitig
  - Unterschiedliche Berechtigungen
@@ -33,27 +33,27 @@ Featureliste:
 
 Installation
 ------------
-1) Daten in das htdocs Verzeichnis entpacken
-2) SSH-Keys erzeugen (Passphrase leer lassen):
- > ssh-keygen -f /etc/apache2/ssh_key_gswi
- > chown www-data:www-data /etc/apache2/ssh_key_gswi
-5) config.inc.php anpassen
- - MySQL-Daten anpassen
-6) DB-Struktur einspielen: DB.sql
- - mysql -u mysql_user -p mysql_db < DB.sql
-7) Seite aufrufen
- - User: superadmin
- - PW: default
+1. Daten in das htdocs Verzeichnis entpacken
+2. SSH-Keys erzeugen (Passphrase leer lassen):
+> ssh-keygen -f /etc/apache2/ssh_key_gswi
+> chown www-data:www-data /etc/apache2/ssh_key_gswi
+5. config.inc.php anpassen
+> MySQL-Daten anpassen
+6. DB-Struktur einspielen: DB.sql
+> mysql -u mysql_user -p mysql_db < DB.sql
+7. Seite aufrufen
+> User: superadmin
+> PW: default
 
 
 Einrichtung 
 -----------
-Server einrichten:
+### Server einrichten
  - Hier gibt man Name, IP, User und Score an
  - Wenn schon Games vorhanden sind, kann man dem Server games zuweisen - nur diese Games können dann auch auf dem Server gestartet werden
  - Nach dem Hinzufuegen des Servers, in der Tabelle auf "Zugriff einrichten" klicken - danach kann das Webinterface auf den Server zugreifen
    
-Games einrichten:
+### Games einrichten
  - Einzugeben ist:
    - Icon (Auflistung aller Dateien im Ordner "images/")
    - Name (Kurzname, ohne sonderzeichen etc - wird für den Screen-Namen benutzt) - z.B. "cs16" oder "css" oder "cod4" oder ...
@@ -71,7 +71,7 @@ Games einrichten:
    - Server (Liste der Server, auf denen dieses Game laufen kann)
  - Ein Game kann nur auf den Servern gestartet werden, auf denen das Game zugewiesen ist
 
-Die Sache mit den Scores:
+### Die Sache mit den Scores
  - Die Server bekommen bestimmte Scores (z.B. 100)
  - Die Games bekommen bestimmte Scores (z.B. cs16 = 10, css = 20)
  Dann hat der Server 100 Score-Punkte zu verfügung - die Games kosten 20 bzw 10 Score-Punkte
