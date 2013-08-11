@@ -34,15 +34,14 @@ Die Admins sind dann diejenigen, die die Server einrichten und administrieren. D
 Installation
 ------------
 1. Daten in das htdocs Verzeichnis entpacken
-2. SSH-Keys erzeugen (Passphrase leer lassen):
-> ssh-keygen -f /etc/apache2/ssh_key_gswi
-> chown www-data:www-data /etc/apache2/ssh_key_gswi
-5. config.inc.php anpassen
-> MySQL-Daten anpassen
-6. DB-Struktur einspielen: DB.sql
-> mysql -u mysql_user -p mysql_db < DB.sql
-7. Seite aufrufen
-> User: superadmin
+2. SSH-Keys erzeugen (Passphrase leer lassen):  
+``ssh-keygen -f /etc/apache2/ssh_key_gswi``  
+``chown www-data:www-data /etc/apache2/ssh_key_gswi``
+5. In der config.inc.php die MySQL-Daten anpassen (alles andere kann bleiben)
+6. DB-Struktur einspielen: DB.sql  
+``mysql -u mysql_user -p mysql_db < DB.sql``
+7. Seite aufrufen  
+> User: superadmin  
 > PW: default
 
 
