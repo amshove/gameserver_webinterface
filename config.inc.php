@@ -15,7 +15,7 @@ $mysql_db = "gameserver";
 # Und der Owner muss der Benutzer sein, mit dem der Webserver ausgefuehrt wird!
 # Un die Rechte muessen 600 sein!
 $ssh_priv_key = "/etc/apache2/ssh_key_gameserver";
-$ssh_pub_key = "";
+$ssh_pub_key = "/etc/apache2/ssh_key_gameserver.pub";
 $ssh_string = "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=1 -i $ssh_priv_key"; // SSH-Befehl, mit dem die Verbindung aufgebaut
 
 // Default-PW, was gesetzt wird

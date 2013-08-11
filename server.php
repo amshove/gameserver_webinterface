@@ -20,6 +20,18 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
 }elseif($_GET["cmd"] == "del" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Server loeschen
   mysql_query("DELETE FROM server WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1");
+}elseif($_GET["cmd"] == "access" && is_numeric($_GET["id"]) && !empty($_GET["id"]) && !empty($_POST["pw"])){
+  // Zugang einrichten
+  $server = mysql_fetch_assoc(mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1"));
+  install_access($server,$_POST["pw"]);
+}elseif($_GET["cmd"] == "access" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
+  // Passwort abfragen um den Zugang einzurichten
+  $server = mysql_fetch_assoc(mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1"));
+  echo "<div class='meldung_notify'>";
+  echo "Um den dauerhaften Zugang vom Webinterface auf den Server einzurichten muss einmalig das Passwort angegeben werden - das wird nicht gespeichert.<br>";
+  echo "<form action='index.php?page=server&cmd=access&id=".$_GET["id"]."' method='POST'>";
+  echo "Passwort f&uuml;r <b>".$server["user"]."@".$server["name"]."</b>: <input type='password' name='pw' size='10'><input type='submit' value='Zugang einrichten'>";
+  echo "</form></div><br>";
 }elseif($_GET["cmd"] == "reboot" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Server rebooten
   $server = mysql_fetch_assoc(mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1"));
@@ -57,7 +69,7 @@ if($_POST["add"] || $_POST["edit"]){
     if($_POST["add"]){
       // Server hinzufuegen
       mysql_query("INSERT INTO server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."', notes = '$notes'");
-      echo "<div class='meldung_ok'>Server eingetragen</div><br><div class='meldung_notify'><b>NICHT VERGESSEN:</b> der SSH-Key muss eingespielt werden - siehe ganz unten</div><br>";
+      echo "<div class='meldung_ok'>Server eingetragen</div><br><div class='meldung_notify'><b>NICHT VERGESSEN:</b> Damit das Webinterface Zugang zum Server bekommt, bitte auf \"Zugang einrichten\" des jeweiligen Servers klicken.</div><br>";
     }elseif($_POST["edit"]){
       // Server aendern
       mysql_query("UPDATE server SET name = '".$name."', ip = '".$ip."', user = '$user', score = '".$score."', games = '".$games."', notes = '$notes' WHERE id = '".$id."' LIMIT 1");
@@ -131,10 +143,12 @@ echo "<table>
 
 $query = mysql_query("SELECT * FROM server ORDER BY name");
 while($row = mysql_fetch_assoc($query)){
-  if(host_check_ping($row)) $ping_color = "#00FF00";
-  else $ping_color = "#FF0000";
-  if(host_check_login($row)) $login_color = "#00FF00";
-  else $login_color = "#FF0000";
+  $ping_color = "#FF0000";
+  $login_color = "#FF0000";
+  if(host_check_ping($row)){
+    $ping_color = "#00FF00";
+    if(host_check_login($row)) $login_color = "#00FF00";
+  }
 
   echo "<tr>
     <td style='background-color: $ping_color;'>&nbsp;</td>
@@ -147,19 +161,12 @@ while($row = mysql_fetch_assoc($query)){
   echo "</td>
     <td valign='top'>".$row["score"]."</td>
     <td valign='top'>".nl2br($row["notes"])."</td>
-    <td valign='top' align='center'><a href='index.php?page=server&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=server&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Server wirklich l&ouml;schen?\");'>del</a>&nbsp;&nbsp;--&nbsp;&nbsp;
+    <td valign='top' align='center'><a href='index.php?page=server&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=server&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Server wirklich l&ouml;schen?\");'>del</a> | <a href='index.php?page=server&cmd=access&id=".$row["id"]."'>Zugang einrichten</a><br>
     <a href='index.php?page=server&cmd=reboot&id=".$row["id"]."' onClick='return confirm(\"Server wirklich rebooten?\");'>reboot</a> | <a href='index.php?page=server&cmd=shutdown&id=".$row["id"]."' onClick='return confirm(\"Server wirklich herunterfahren?\");'>shutdown</a></td>
   </tr>";
 }
 
 echo "</table>";
 echo "<a href='index.php?page=server&cmd=shutdown_all' onClick='return confirm(\"Wirklich alle Server herunterfahren?\");'>shutdown all</a>";
-
-echo "<br><br>";
-
-// SSH-Key anzeigen
-echo "<h3>SSH-Key</h3>";
-echo "Folgender ssh-Key muss auf allen Server in der Datei ~/.ssh/authorized_keys eingetragen werden! (ist nur eine Zeile!)<br>";
-echo "<input type='text' size='150' value='$ssh_pub_key' onClick='this.select();'>";
 }
 ?>

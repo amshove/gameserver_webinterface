@@ -171,6 +171,59 @@ function host_check_ping($server){
   else return false;
 }
 
+// Funktion um den Zugang zu einem neuen Server einzurichten
+function install_access($server,$pw){
+  global $ssh_pub_key, $ssh_string;
+  $pw = escapeshellarg($pw);
+  
+  // SSH-Pub-Key auf Server kopieren
+  exec("sshpass -p '$pw' scp -o StrictHostKeyChecking=no $ssh_pub_key ".$server["user"]."@".$server["ip"].":~/gswi.pub 2>&1",$retarr,$rc);
+  if($rc != 0){
+    echo "<div class='meldung_error'>SSH-Key konnte nicht kopiert werden:<br>";
+    foreach($retarr as $line) echo $line."<br>";
+    echo "</div><br>";
+    return false;
+  }
+
+  // SSH-Key in authorized_key eintragen
+  unset($retarr,$rc);
+  exec("sshpass -p '$pw' ssh -o StrictHostKeyChecking=no ".$server["user"]."@".$server["ip"]." \"mkdir ~/.ssh > /dev/null 2>&1; cat ~/gswi.pub >> ~/.ssh/authorized_keys; rm ~/gswi.pub; sort ~/.ssh/authorized_keys | uniq > ~/.ssh/authorized_keys.new; mv ~/.ssh/authorized_keys.new ~/.ssh/authorized_keys\" 2>&1",$retarr,$rc);
+  if($rc != 0){
+    echo "<div class='meldung_error'>SSH-Key konnte nicht eingetragen werden:<br>";
+    foreach($retarr as $line) echo $line."<br>";
+    echo "</div><br>";
+    return false;
+  }
+
+  // Ab hier passwortloser Login
+  if(!host_check_login($server)){
+    echo "<div class='meldung_error'>Login nicht m&ouml;glich - irgendwas ist falsch gelaufen ...</div><br>";
+    return false;
+  }
+
+  // Screen installieren
+  unset($retarr,$rc);
+  exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"echo '$pw' | sudo -S apt-get -y install screen\" 2>&1");
+  if($rc != 0){
+    echo "<div class='meldung_error'>\"screen\" konnte nicht installiert werden:<br>";
+    foreach($retarr as $line) echo $line."<br>";
+    echo "</div><br>";
+    return false;
+  }
+
+  // Shutdown-Sudo einrichten
+  unset($retarr,$rc);
+  exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"echo '".$server["user"]." ALL=(root) NOPASSWD: /sbin/shutdown' > /tmp/gameserver_wi; echo '$pw' | sudo -S chown root:root /tmp/gameserver_wi; echo '$pw' | sudo -S chmod 440 /tmp/gameserver_wi; echo '$pw' | sudo -S mv /tmp/gameserver_wi /etc/sudoers.d/gameserver_wi\" 2>&1");
+  if($rc != 0){
+    echo "<div class='meldung_error'>SuDo zum Herunterfahren des Servers konnte nicht eingerichtet werden - der Server kann nicht &uuml;ber das Webinterface heruntergefahren oder rebootet werden.<br>";
+    foreach($retarr as $line) echo $line."<br>";
+    echo "</div><br>";
+  }
+
+  echo "<div class='meldung_ok'>Zugang zum Server erfolgreich eingerichtet.</div><br>";
+  return true;
+}
+
 // Funktion zum neustarten des Servers
 function reboot_server($server){
   global $ssh_string;
