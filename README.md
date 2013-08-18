@@ -51,7 +51,7 @@ Anbindung an dotlan Turniersystem
 ---------------------------------
 1. Auf dem dotlan-Server in der /etc/mysql/my.cnf einstellen, dass der Server auch auf externe IPs lauscht (bind-address)
 2. Auf dem dotlan-Server einen MySQL-User anlegen:
-``GRANT USAGE ON *.* TO 'gameserver_wi'@'%' IDENTIFIED BY PASSWORD '<HIER EIN SICHERES PW ...>';``  
+``GRANT USAGE ON *.* TO 'gameserver_wi'@'%' IDENTIFIED BY '<HIER EIN SICHERES PW ...>';``  
 ``GRANT SELECT ON `dotlan`.`t_teilnehmer` TO 'gameserver_wi'@'%';``  
 ``GRANT SELECT ON `dotlan`.`t_turnier` TO 'gameserver_wi'@'%';``  
 ``GRANT SELECT (nick, id) ON `dotlan`.`user` TO 'gameserver_wi'@'%';``  
