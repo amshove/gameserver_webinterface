@@ -34,6 +34,8 @@ Die Admins sind dann diejenigen, die die Server einrichten und administrieren. D
 
 Installation
 ------------
+1. Pakete nachinstallieren
+``apt-get install apache2 libapache2-mod-php5 php5-mysql mysql-server mysql-client sshpass screen``
 1. Daten in das htdocs Verzeichnis entpacken
 2. SSH-Keys erzeugen (Passphrase leer lassen):  
 ``ssh-keygen -f /etc/apache2/ssh_key_gswi``  
@@ -49,17 +51,17 @@ Anbindung an dotlan Turniersystem
 ---------------------------------
 1. Auf dem dotlan-Server in der /etc/mysql/my.cnf einstellen, dass der Server auch auf externe IPs lauscht (bind-address)
 2. Auf dem dotlan-Server einen MySQL-User anlegen:
-> GRANT USAGE ON *.* TO 'gameserver_wi'@'%' IDENTIFIED BY PASSWORD '<HIER EIN SICHERES PW ...>';
-> GRANT SELECT ON `dotlan`.`t_teilnehmer` TO 'gameserver'@'%';
-> GRANT SELECT ON `dotlan`.`t_turnier` TO 'gameserver'@'%';
-> GRANT SELECT (nick, id) ON `dotlan`.`user` TO 'gameserver'@'%';
-> GRANT SELECT ON `dotlan`.`events` TO 'gameserver'@'%';
-> GRANT SELECT ON `dotlan`.`t_teilnehmer_part` TO 'gameserver'@'%';
-> GRANT SELECT ON `dotlan`.`t_contest` TO 'gameserver'@'%';
+``GRANT USAGE ON *.* TO 'gameserver_wi'@'%' IDENTIFIED BY PASSWORD '<HIER EIN SICHERES PW ...>';  
+GRANT SELECT ON `dotlan`.`t_teilnehmer` TO 'gameserver'@'%';  
+GRANT SELECT ON `dotlan`.`t_turnier` TO 'gameserver'@'%';  
+GRANT SELECT (nick, id) ON `dotlan`.`user` TO 'gameserver'@'%';  
+GRANT SELECT ON `dotlan`.`events` TO 'gameserver'@'%';  
+GRANT SELECT ON `dotlan`.`t_teilnehmer_part` TO 'gameserver'@'%';  
+GRANT SELECT ON `dotlan`.`t_contest` TO 'gameserver'@'%';``  
 3. Auf dem Gameserver Webinterface Server in der config.inc.php die MySQL-Daten von dem dotlan-Server eintragen  
 WICHTIG: Nutzt den oben eingerichteten User mit den wenigen Rechten und mit gutem Passwort!!
 4. Auf dem Gameserver Webinterface Server einen Cronjob in die /etc/crontab eintragen:
-> */1 *	* * *	www-data	/usr/bin/php /var/www/cronjob_turniere.php > /dev/null 2>&1
+``*/1 *	* * *	www-data	/usr/bin/php /var/www/cronjob_turniere.php > /dev/null 2>&1``
 
 Einrichtung 
 -----------
@@ -91,6 +93,7 @@ Einrichtung
  - Man kann über das Textfeld bestimmen, welche Variable mit welchem Wert ersetzt werden soll
  - Die Variablen ##team1## und ##team2## werden automatisch durch den Wert aus dotlan ersetzt
  - Der Cronjob läuft jede Minute, d.h. es kann bis zu einer Minute dauern, bis ein Server gestartet/gestoppt wird
+ - Die Turnierserver werden auf irgendeinem Server gestartet, wo das Game laufen kann (siehe Games einrichten) und wo noch genug Score frei ist
 
 ### Die Sache mit den Scores
  - Die Server bekommen bestimmte Scores (z.B. 100)
