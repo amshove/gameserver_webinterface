@@ -52,12 +52,12 @@ Anbindung an dotlan Turniersystem
 1. Auf dem dotlan-Server in der /etc/mysql/my.cnf einstellen, dass der Server auch auf externe IPs lauscht (bind-address)
 2. Auf dem dotlan-Server einen MySQL-User anlegen:
 ``GRANT USAGE ON *.* TO 'gameserver_wi'@'%' IDENTIFIED BY PASSWORD '<HIER EIN SICHERES PW ...>';``  
-``GRANT SELECT ON `dotlan`.`t_teilnehmer` TO 'gameserver'@'%';``  
-``GRANT SELECT ON `dotlan`.`t_turnier` TO 'gameserver'@'%';``  
-``GRANT SELECT (nick, id) ON `dotlan`.`user` TO 'gameserver'@'%';``  
-``GRANT SELECT ON `dotlan`.`events` TO 'gameserver'@'%';``  
-``GRANT SELECT ON `dotlan`.`t_teilnehmer_part` TO 'gameserver'@'%';``  
-``GRANT SELECT ON `dotlan`.`t_contest` TO 'gameserver'@'%';``  
+``GRANT SELECT ON `dotlan`.`t_teilnehmer` TO 'gameserver_wi'@'%';``  
+``GRANT SELECT ON `dotlan`.`t_turnier` TO 'gameserver_wi'@'%';``  
+``GRANT SELECT (nick, id) ON `dotlan`.`user` TO 'gameserver_wi'@'%';``  
+``GRANT SELECT ON `dotlan`.`events` TO 'gameserver_wi'@'%';``  
+``GRANT SELECT ON `dotlan`.`t_teilnehmer_part` TO 'gameserver_wi'@'%';``  
+``GRANT SELECT ON `dotlan`.`t_contest` TO 'gameserver_wi'@'%';``  
 3. Auf dem Gameserver Webinterface Server in der config.inc.php die MySQL-Daten von dem dotlan-Server eintragen  
 WICHTIG: Nutzt den oben eingerichteten User mit den wenigen Rechten und mit gutem Passwort!!
 4. Auf dem Gameserver Webinterface Server einen Cronjob in die /etc/crontab eintragen:
