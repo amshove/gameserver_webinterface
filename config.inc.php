@@ -36,4 +36,10 @@ $default_pw = "default";
 
 // Groesse der Bilder
 $image_height = "15";
+
+#### Dotlan Turniere ####
+$dotlan_mysql_host = "dotlan";
+$dotlan_mysql_user = "gameserver_wi";
+$dotlan_mysql_pw = "";
+$dotlan_mysql_db = "dotlan";
 ?>

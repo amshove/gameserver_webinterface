@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 2.11.8.1deb5+lenny7
+-- version 3.4.10.1deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 08. Januar 2011 um 17:16
--- Server Version: 5.0.51
--- PHP-Version: 5.2.6-1+lenny9
+-- Erstellungszeit: 18. Aug 2013 um 17:13
+-- Server Version: 5.5.32
+-- PHP-Version: 5.3.10-1ubuntu3.7
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 --
 -- Datenbank: `gameserver`
@@ -16,11 +17,11 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `games`
+-- Tabellenstruktur fÃ¼r Tabelle `games`
 --
 
 CREATE TABLE IF NOT EXISTS `games` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `icon` varchar(200) NOT NULL,
   `name` varchar(200) NOT NULL,
   `folder` varchar(200) NOT NULL,
@@ -28,22 +29,17 @@ CREATE TABLE IF NOT EXISTS `games` (
   `defaults` text NOT NULL,
   `start_port` int(11) NOT NULL,
   `score` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `games`
---
-
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `running`
+-- Tabellenstruktur fÃ¼r Tabelle `running`
 --
 
 CREATE TABLE IF NOT EXISTS `running` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `screen` varchar(200) NOT NULL,
   `serverid` int(10) unsigned NOT NULL,
   `gameid` int(10) unsigned NOT NULL,
@@ -51,22 +47,18 @@ CREATE TABLE IF NOT EXISTS `running` (
   `port` int(11) NOT NULL,
   `score` int(11) NOT NULL,
   `vars` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `running`
---
-
+  `t_contest_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `server`
+-- Tabellenstruktur fÃ¼r Tabelle `server`
 --
 
 CREATE TABLE IF NOT EXISTS `server` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
   `ip` varchar(15) NOT NULL,
   `user` varchar(200) NOT NULL,
@@ -74,31 +66,40 @@ CREATE TABLE IF NOT EXISTS `server` (
   `score` int(11) NOT NULL,
   `notes` text NOT NULL,
   `active` tinyint(1) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `server`
---
-
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `user`
+-- Tabellenstruktur fÃ¼r Tabelle `turniere`
+--
+
+CREATE TABLE IF NOT EXISTS `turniere` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `game` int(10) unsigned NOT NULL,
+  `turnier` int(11) NOT NULL,
+  `vars` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur fÃ¼r Tabelle `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `login` varchar(200) NOT NULL,
   `pw` varchar(200) NOT NULL,
   `name` varchar(200) NOT NULL,
   `ad_level` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 --
--- Daten für Tabelle `user`
+-- Daten fÃ¼r Tabelle `user`
 --
 
 INSERT INTO `user` (`id`, `login`, `pw`, `name`, `ad_level`) VALUES

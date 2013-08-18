@@ -29,7 +29,7 @@ $ad_level = array(
 $ssh_string = "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=1 -i $ssh_priv_key";
 
 // Mit MySQL verbinden
-mysql_connect($mysql_host,$mysql_user,$mysql_pw) or die(mysql_error());
+$db = mysql_connect($mysql_host,$mysql_user,$mysql_pw) or die(mysql_error());
 mysql_select_db($mysql_db) or die(mysql_error());
 
 // Session starten
@@ -129,24 +129,28 @@ function kill_screen($server,$screen){
 
 // Funktion zum beenden eines Gameservers
 function kill_server($running_id){
-  $query = mysql_query("SELECT screen, serverid FROM running WHERE id = '".$running_id."' LIMIT 1");
+  global $db;
+
+  $query = mysql_query("SELECT screen, serverid FROM running WHERE id = '".$running_id."' LIMIT 1",$db);
   $running = mysql_fetch_assoc($query);
-  $query = mysql_query("SELECT * FROM server WHERE id = '".$running["serverid"]."' LIMIT 1");
+  $query = mysql_query("SELECT * FROM server WHERE id = '".$running["serverid"]."' LIMIT 1",$db);
   $server = mysql_fetch_assoc($query);
 
   if(!kill_screen($server,$running["screen"])){
     echo "<div class='meldung_error'>Server konnte nicht gestoppt werden.</div><br>";
   }else{
-    mysql_query("DELETE FROM running WHERE id = '".$running_id."' LIMIT 1");
+    mysql_query("DELETE FROM running WHERE id = '".$running_id."' LIMIT 1",$db);
     echo "<div class='meldung_ok'>Server gekillt.</div><br>";
   }
 }
 
 // Funktion zum restarten eines Gameservers
 function restart_server($running_id){
-  $query = mysql_query("SELECT * FROM running WHERE id = '".$running_id."' LIMIT 1");
+  global $db;
+
+  $query = mysql_query("SELECT * FROM running WHERE id = '".$running_id."' LIMIT 1",$db);
   $running = mysql_fetch_assoc($query);
-  $query = mysql_query("SELECT * FROM server WHERE id = '".$running["serverid"]."' LIMIT 1");
+  $query = mysql_query("SELECT * FROM server WHERE id = '".$running["serverid"]."' LIMIT 1",$db);
   $server = mysql_fetch_assoc($query);
 
   if(!kill_screen($server,$running["screen"])){
@@ -157,7 +161,7 @@ function restart_server($running_id){
   }
 
   // Game starten
-  $query = mysql_query("SELECT * FROM games WHERE id = '".$running["gameid"]."' LIMIT 1");
+  $query = mysql_query("SELECT * FROM games WHERE id = '".$running["gameid"]."' LIMIT 1",$db);
   $game = mysql_fetch_assoc($query);
   if(!starte_cmd($server,$running["cmd"],$running["screen"],$game["folder"])){ // Server starten ...
     echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
@@ -168,7 +172,9 @@ function restart_server($running_id){
 
 // Funktion zum Auflisten aller Server, denen ein bestimmtes Game zugewiesen ist
 function get_server_with_game($gameid){
-  $query = mysql_query("SELECT * FROM server WHERE active = 1 AND (games LIKE '".$gameid."' OR games LIKE '".$gameid.",%' OR games LIKE '%,".$gameid.",%' OR games LIKE '%,".$gameid."') ORDER BY name");
+  global $db;
+
+  $query = mysql_query("SELECT * FROM server WHERE active = 1 AND (games LIKE '".$gameid."' OR games LIKE '".$gameid.",%' OR games LIKE '%,".$gameid.",%' OR games LIKE '%,".$gameid."') ORDER BY name",$db);
   return $query;
 }
 
