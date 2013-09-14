@@ -30,6 +30,9 @@ while($row = mysql_fetch_assoc($query)){
   $team_b = mysql_result(mysql_query("SELECT tnname FROM t_teilnehmer WHERE tnid = '".$row["team_b"]."' LIMIT 1",$dotlan),0,"tnname");
   if(empty($team_b)) $team_b = mysql_result(mysql_query("SELECT u.nick AS nick FROM user AS u, t_teilnehmer_part AS t WHERE t.user_id = id AND t.tnid = '".$row["team_b"]."' LIMIT 1",$dotlan),0,"nick"); 
 
+  $team_a = preg_replace("/[^a-zA-Z0-9]*/","",$team_a);
+  $team_b = preg_replace("/[^a-zA-Z0-9]*/","",$team_b);
+
   // Game starten
   $game = $games[$turniere[$row["tid"]]["game"]];
   $server = false;
