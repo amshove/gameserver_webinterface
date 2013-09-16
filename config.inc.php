@@ -31,6 +31,10 @@ $mysql_db = "gameserver";
 $ssh_priv_key = "/etc/apache2/ssh_key_gswi";
 $ssh_pub_key = "/etc/apache2/ssh_key_gswi.pub";
 
+// SOAP-API Daten
+$soap_user = "game_wi"; // User fuer die API
+$soap_pw = "changeme"; // PW fuer die API
+
 // Default-PW, was gesetzt wird
 $default_pw = "default";
 
