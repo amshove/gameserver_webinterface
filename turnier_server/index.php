@@ -1,7 +1,7 @@
 <?php
 ###########################################################################
 # Gameserver Webinterface - dotlan Modul                                  #
-# Copyright (C) 2013 Christian Egbers <c.egbers@servious-networx.net>     #
+# Copyright (C) 2013 Christian Egbers <c.egbers@serious-networx.net>      #
 #                    Torsten Amshove <torsten@amshove.net>                #
 #                                                                         #
 # This program is free software; you can redistribute it and/or modify    #
@@ -137,7 +137,9 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
 
   $output .= "<br>";
   if($server["status"] == "not running"){
-    if($out_turnier['ready_a'] <> "0000-00-00 00:00:00" && $out_turnier['ready_b'] <> "0000-00-00 00:00:00" ){
+    if($out_turnier["won"] > 0){
+      $output .= "Die Begegnung wurde bereits ausgetragen und das Ergebnis eingetragen.";
+    }elseif($out_turnier['ready_a'] <> "0000-00-00 00:00:00" && $out_turnier['ready_b'] <> "0000-00-00 00:00:00" ){
       $output .= "<form action='".$_SERVER["REQUEST_URI"]."' method='POST'><input type='submit' name='startServer' value='Server starten'></form>";
     }else{
       $output .= "Es sind nicht alle Spieler bereit.";
