@@ -45,14 +45,13 @@ if($_POST["add"] || $_POST["edit"]){
   $id = mysql_real_escape_string($_POST["id"]);
   $game = mysql_real_escape_string($_POST["game"]);
   $turnier = mysql_real_escape_string($_POST["turnier"]);
-  $vars = mysql_real_escape_string($_POST["vars"]);
   if($_POST["add"]){
     // Turnier-Zuordnung anlegen
-    mysql_query("INSERT INTO turniere SET game = '".$game."', turnier = '".$turnier."', vars = '".$vars."'",$db);
+    mysql_query("INSERT INTO turniere SET game = '".$game."', turnier = '".$turnier."'",$db);
     $id = mysql_insert_id();
   }elseif($_POST["edit"]){
     // Turnier-Zuordnung aendern
-    mysql_query("UPDATE turniere SET game = '".$game."', turnier = '".$turnier."', vars = '".$vars."' WHERE id = '".$id."' LIMIT 1",$db);
+    mysql_query("UPDATE turniere SET game = '".$game."', turnier = '".$turnier."' WHERE id = '".$id."' LIMIT 1",$db);
   }
 }
 
@@ -93,10 +92,6 @@ while($row = mysql_fetch_assoc($query)){
 echo "</select></td>
   </tr>
   <tr>
-    <td valign='top'>Variablen:<br><font style='font-size: 10px;'>Variablen + Werte angeben (pro Zeile eine Variable):<br><br>variable=>value<br><br>##variable## wird dann im Befehl durch den Wert 'value' ersetzt.</font></td>
-    <td><textarea name='vars' cols='50' rows='5'>".(!empty($value["vars"]) ? $value["vars"] : ($submit_name = 'add') ? "name=>Turnier ##team1## vs. ##team2##" : "")."</textarea><br><font style='font-size: 10px;'>Dotlan-Variablen k&ouml;nnen als value eingesetzt werden:<br>##team1##, ##team2##</td>
-  </tr>
-  <tr>
     <td colspan='2' align='center'><input type='submit' name='".$submit_name."' value='".$submit_value."'></td>
   </tr>
 </table>
@@ -109,7 +104,6 @@ echo "<table>
   <tr>
     <th width='200'>Game</th>
     <th width='200'>Dotlan-Turnier</th>
-    <th width='350'>Variablen</th>
     <th width='100'>&nbsp;</th>
   </tr>";
 
@@ -120,7 +114,6 @@ while($row = mysql_fetch_assoc($query)){
   echo "<tr>
     <td valign='top'><img src='images/".$game["icon"]."' height='$image_height'> ".$game["name"]."</td>
     <td valign='top'>".$turnier["tname"]."</td>
-    <td valign='top'>".nl2br($row["vars"])."</td>
     <td valign='top' align='center'><a href='index.php?page=turniere&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=turniere&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Turnier-Zuordnung wirklich l&ouml;schen?\");'>del</a></td>
   </tr>";
 }

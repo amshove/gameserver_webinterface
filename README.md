@@ -60,7 +60,20 @@ Anbindung an dotlan Turniersystem
 ``GRANT SELECT ON `dotlan`.`t_contest` TO 'gameserver_wi'@'%';``  
 3. Auf dem Gameserver Webinterface Server in der config.inc.php die MySQL-Daten von dem dotlan-Server eintragen  
 WICHTIG: Nutzt den oben eingerichteten User mit den wenigen Rechten und mit gutem Passwort!!
-4. Auf dem Gameserver Webinterface Server einen Cronjob in die /etc/crontab eintragen:
+4. Auf dem Gameserver Webinterface Server in der config.inc.php ein sichere SOAP-PW eintragen ($soap_user und $soap_pw)
+5. Das Verzeichnis "turnier_server" auf den dotlan-Server in das dotlan-Verzeichnis verschieben und in der index.php das gleiche SOAP-PW eintragen ($soap_user und $soap_pw)
+6. Die Dotlan-Templates um einen Button erweitern (html/templates/<tpl>/turnier/turnier_contest_single.tpl und turnier_contest_team.tpl):  
+``<tr>``  
+``  <td class="msghead3" colspan="2" style="padding: 2px 6px;">Contest-Server:</td>``  
+``</tr>``  
+``<tr>``  
+``  <td class="msgrow1"  colspan="2" style="padding: 2px 6px;">``  
+``    <div align="center">``  
+``      <input type="button" value="Contest-Server starten" onclick="location.href='/turnier/contest.php?id={$tcid}&round={$round}';" style="font-weight: bold;"/>``  
+``    </div>``  
+``  </td>``  
+``</tr>``  
+7. Auf dem Gameserver Webinterface Server einen Cronjob in die /etc/crontab eintragen:  
 ``*/1 *	* * *	www-data	/usr/bin/php /var/www/cronjob_turniere.php > /dev/null 2>&1``
 
 Einrichtung 
@@ -90,10 +103,9 @@ Einrichtung
 
 ### Turniere einrichten
  - Hier wird die Verknüpfung zwischen Gameserver und dotlan-Turnier eingestellt
- - Man kann über das Textfeld bestimmen, welche Variable mit welchem Wert ersetzt werden soll
- - Die Variablen ##team1## und ##team2## werden automatisch durch den Wert aus dotlan ersetzt
- - Der Cronjob läuft jede Minute, d.h. es kann bis zu einer Minute dauern, bis ein Server gestartet/gestoppt wird
+ - Ein Cronjob läuft jede Minute um die Server von beendeten Begegnungen (Ergebnis wurde eingetragen) automatisch zu stoppen
  - Die Turnierserver werden auf irgendeinem Server gestartet, wo das Game laufen kann (siehe Games einrichten) und wo noch genug Score frei ist
+ - Gestartet wird ein Turnierserver von den Usern über das Dotlan-Modul "turnier_server"
 
 ### Die Sache mit den Scores
  - Die Server bekommen bestimmte Scores (z.B. 100)
