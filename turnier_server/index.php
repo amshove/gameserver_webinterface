@@ -72,24 +72,20 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
   $output .= "<td width='100%' valign='top'><div style='padding-top: 5px; padding-left: 5px;'>
     <b>Contest-ID: ".$out_turnier['tcid']."</b><br><br>";
   
-  if($_GET['view'] == "single"){
-    $out_contest_name = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_a']."'"));
+  $out_contest_name = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_a']."'"));
+  if(!empty($out_contest_team_name_a['tnname'])) $team_a = $out_contest_team_name_a['tnname'];
+  else{
     $out_contest_name_a = $DB->fetch_array($DB->query("SELECT * FROM user WHERE id = '".$out_contest_name['tnleader']."'"));
     $team_a = $out_contest_name_a['nick'];
-  }else{
-    $out_contest_team_name_a = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_a']."' "));
-    $team_a = $out_contest_team_name_a['tnname'];
   }
-  
-  if($_GET['view'] == "single"){
-    $out_contest_name = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_b']."'"));
+
+  $out_contest_name = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_b']."'"));
+  if(!empty($out_contest_team_name_a['tnname'])) $team_b = $out_contest_team_name_a['tnname'];
+  else{
     $out_contest_name_b = $DB->fetch_array($DB->query("SELECT * FROM user WHERE id = '".$out_contest_name['tnleader']."'"));
     $team_b = $out_contest_name_b['nick'];
-  }else{
-    $out_contest_team_name_b = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_b']."' "));
-    $team_b = $out_contest_team_name_b['tnname'];
   }
-  
+
   $output .= $team_a." vs. ".$team_b;
 
   $output .= " (".substr($out_turnier['starttime'], 0, 10)." ".substr($out_turnier['starttime'], 11).")</div>";
@@ -104,7 +100,7 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
 
     // Variablen, die im CMD ersetzt werden sollen:
     $start_vars = array(
-      "name" => "Contest ".$out_turnier['tcid']." - ".$team_a." vs ".$team_b,
+      "name" => "Contest ".$out_turnier['tcid']." - ".$team_a." vs ".$team_b." - ".escapeshellarg($_GET['round']),
       "rcon" => "TODO_rcon",
       "pw" => "TODO_pw"
     );
