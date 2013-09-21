@@ -47,115 +47,125 @@ try{
 
 if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
   // DB Abfragen
-  $sql_turnier = $DB->query("SELECT * FROM t_contest WHERE tcid = '".mysql_real_escape_string($_GET['tcid'])."'");
-  $out_turnier = $DB->fetch_array($sql_turnier);
+  $out_turnier = $DB->fetch_array($DB->query("SELECT * FROM t_contest WHERE tcid = '".mysql_real_escape_string($_GET['tcid'])."'"));
   $out_contest = $DB->fetch_array($DB->query("SELECT * FROM t_turnier WHERE tid = '".$out_turnier['tid']."' "));
+  $out_contest_a = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_a']."'"));
+  $out_contest_b = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_b']."'"));
 
-  $output = "<table width='100%' cellspacing='1' cellpadding='2' border='0' class='msg2'>
-    <tbody>
-      <tr>";
-  
-  if($out_contest['tlogo'] <> ""){
-    $output .= "<td colspan='2' class='msghead'>";
+  $allowed_users = array($out_contest_a['tnleader'],$out_contest_b['tnleader']);
+  if(!empty($out_contest_a['tnname'])){
+    $query = $DB->query("SELECT user_id FROM t_teilnehmer_part WHERE tnid IN ('".$out_turnier['team_a']."','".$out_turnier['team_b']."')");
+    while($row = $DB->fetch_array($query)) $allowed_users[] = $row["user_id"];
+  }
+
+  // Gucken, ob der User ueberhaupt mitspielt
+  if(!$ADMIN->check(IS_ADMIN) && !in_array($user_id,$allowed_users)){
+    $output = "Du bist nicht Teilnehmer dieser Begegnung.";
   }else{
-    $output .= "<td class='msghead'>";
-  }
+    $output = "<table width='100%' cellspacing='1' cellpadding='2' border='0' class='msg2'>
+      <tbody>
+        <tr>";
+    
+    if($out_contest['tlogo'] <> ""){
+      $output .= "<td colspan='2' class='msghead'>";
+    }else{
+      $output .= "<td class='msghead'>";
+    }
+    
+    $output .= "<b>".$out_contest['tname']." --> ".htmlentities($_GET['round'])."</b></td>
+        </tr>
+        <tr class='msgrow2'>";
+    
+    if($out_contest['tlogo'] <> ""){
+      $output .= "<td><img height='75' src='/images/turnier_logo/".$out_contest['tlogo']."'></td>";
+    }
+    
+    $output .= "<td width='100%' valign='top'><div style='padding-top: 5px; padding-left: 5px;'>
+      <b>Contest-ID: ".$out_turnier['tcid']."</b><br><br>";
+    
+    if(!empty($out_contest_a['tnname'])) $team_a = $out_contest_a['tnname'];
+    else{
+      $out_contest_name_a = $DB->fetch_array($DB->query("SELECT * FROM user WHERE id = '".$out_contest_a['tnleader']."'"));
+      $team_a = $out_contest_name_a['nick'];
+    }
   
-  $output .= "<b>".$out_contest['tname']." --> ".htmlentities($_GET['round'])."</b></td>
-      </tr>
-      <tr class='msgrow2'>";
+    if(!empty($out_contest_b['tnname'])) $team_b = $out_contest_b['tnname'];
+    else{
+      $out_contest_name_b = $DB->fetch_array($DB->query("SELECT * FROM user WHERE id = '".$out_contest_b['tnleader']."'"));
+      $team_b = $out_contest_name_b['nick'];
+    }
   
-  if($out_contest['tlogo'] <> ""){
-    $output .= "<td><img height='75' src='/images/turnier_logo/".$out_contest['tlogo']."'></td>";
-  }
+    $output .= $team_a." vs. ".$team_b;
   
-  $output .= "<td width='100%' valign='top'><div style='padding-top: 5px; padding-left: 5px;'>
-    <b>Contest-ID: ".$out_turnier['tcid']."</b><br><br>";
+    $output .= " (".substr($out_turnier['starttime'], 0, 10)." ".substr($out_turnier['starttime'], 11).")</div>";
   
-  $out_contest_name = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_a']."'"));
-  if(!empty($out_contest_team_name_a['tnname'])) $team_a = $out_contest_team_name_a['tnname'];
-  else{
-    $out_contest_name_a = $DB->fetch_array($DB->query("SELECT * FROM user WHERE id = '".$out_contest_name['tnleader']."'"));
-    $team_a = $out_contest_name_a['nick'];
-  }
-
-  $out_contest_name = $DB->fetch_array($DB->query("SELECT * FROM t_teilnehmer WHERE tnid = '".$out_turnier['team_b']."'"));
-  if(!empty($out_contest_team_name_a['tnname'])) $team_b = $out_contest_team_name_a['tnname'];
-  else{
-    $out_contest_name_b = $DB->fetch_array($DB->query("SELECT * FROM user WHERE id = '".$out_contest_name['tnleader']."'"));
-    $team_b = $out_contest_name_b['nick'];
-  }
-
-  $output .= $team_a." vs. ".$team_b;
-
-  $output .= " (".substr($out_turnier['starttime'], 0, 10)." ".substr($out_turnier['starttime'], 11).")</div>";
-
-  //// Ab hier der Kram mit dem Gameserver - vorher war nur Dotlan DB Inhalte ////
-  // Server starten
-  if($_POST["startServer"]){
-
-    // Alles ausser Buchstaben und Zahlen aus den Teamnamen entfernen
-    $team_a = preg_replace("/[^a-zA-Z0-9]*/","",$team_a);
-    $team_b = preg_replace("/[^a-zA-Z0-9]*/","",$team_b);
-
-    // Variablen, die im CMD ersetzt werden sollen:
-    $start_vars = array(
-      "name" => "Contest ".$out_turnier['tcid']." - ".$team_a." vs ".$team_b." - ".escapeshellarg($_GET['round']),
-      "rcon" => "TODO_rcon",
-      "pw" => "TODO_pw"
-    );
-
+    //// Ab hier der Kram mit dem Gameserver - vorher war nur Dotlan DB Inhalte ////
+    // Server starten
+    if($_POST["startServer"]){
+  
+      // Alles ausser Buchstaben und Zahlen aus den Teamnamen entfernen
+      $team_a = preg_replace("/[^a-zA-Z0-9]*/","",$team_a);
+      $team_b = preg_replace("/[^a-zA-Z0-9]*/","",$team_b);
+  
+      // Variablen, die im CMD ersetzt werden sollen:
+      $start_vars = array(
+        "name" => "Contest ".$out_turnier['tcid']." - ".$team_a." vs ".$team_b." - ".escapeshellarg($_GET['round']),
+        "rcon" => "TODO_rcon",
+        "pw" => "TODO_pw"
+      );
+  
+      try{
+        $result = $client->startServer($out_turnier['tcid'],$out_turnier['tid'],$start_vars);
+      }catch(Exception $e){
+        $output .= "startServer ERROR: ".$e->getMessage();
+      }
+  
+      if($result[0]){
+        $output .= "<br>Server erfolgreich gestartet.<br>";
+      }else{
+        $output .= "<br>Beim Starten des Servers ist ein Fehler aufgetreten: ".$result[1]."<br>";
+      }
+    }
+  
+    // Server Infos holen
     try{
-      $result = $client->startServer($out_turnier['tcid'],$out_turnier['tid'],$start_vars);
+      $server = $client->getServer($_GET["tcid"]);
     }catch(Exception $e){
-      $output .= "startServer ERROR: ".$e->getMessage();
+      $output .= "getServer ERROR: ".$e->getMessage();
     }
-
-    if($result[0]){
-      $output .= "<br>Server erfolgreich gestartet.<br>";
-    }else{
-      $output .= "<br>Beim Starten des Servers ist ein Fehler aufgetreten: ".$result[1]."<br>";
-    }
-  }
-
-  // Server Infos holen
-  try{
-    $server = $client->getServer($_GET["tcid"]);
-  }catch(Exception $e){
-    $output .= "getServer ERROR: ".$e->getMessage();
-  }
-  // $server["status"]      - running / not running
-  // $server["screen"]      - Name des Screens (eher fuer debugging als fuer den User)
-  // $server["port"]        - Port des Servers
-  // $server["variables"][] - Array mit allen Variablen, die zum Starten des Games gefuellt wurden (key => value)
-  // $server["name"]        - Hostname des Servers
-  // $server["ip"]          - IP des Servers
-
-  $output .= "<br>";
-  if($server["status"] == "not running"){
-    if($out_turnier["won"] > 0){
-      $output .= "Die Begegnung wurde bereits ausgetragen und das Ergebnis eingetragen.";
-    }elseif($out_turnier['ready_a'] <> "0000-00-00 00:00:00" && $out_turnier['ready_b'] <> "0000-00-00 00:00:00" ){
-      $output .= "<form action='".$_SERVER["REQUEST_URI"]."' method='POST'><input type='submit' name='startServer' value='Server starten'></form>";
-    }else{
-      $output .= "Es sind nicht alle Spieler bereit.";
-    }
-  }elseif($server["status"] == "running"){
-    $output .= "<div style='padding-top: 5px; padding-left: 5px;'>";
-    $output .= "<b>".$server["ip"].":".$server["port"]."</b><br>";
-    $output .= "Name: ".$server["variables"]["name"]."<br>";
-    $output .= "RCON: ".$server["variables"]["rcon"]."<br>";
-    $output .= "Server-Passwort: ".$server["variables"]["pw"]."<br>";
-    $output .= "<br><b>Der Server wird automatisch gestoppt, sobald das <a href='/turnier/?do=contest&id=".$_GET["tcid"]."'>Ergebnis</a> eingetragen wurde.</b>";
-    $output .= "</div>";
-  }else{
-    $output .= "Der Server-Status konnte nicht abgefragt werden.";
-  }
+    // $server["status"]      - running / not running
+    // $server["screen"]      - Name des Screens (eher fuer debugging als fuer den User)
+    // $server["port"]        - Port des Servers
+    // $server["variables"][] - Array mit allen Variablen, die zum Starten des Games gefuellt wurden (key => value)
+    // $server["name"]        - Hostname des Servers
+    // $server["ip"]          - IP des Servers
   
-  $output .= "</td>
-      </tr>
-    </tbody>
-  </table>";
+    $output .= "<br>";
+    if($server["status"] == "not running"){
+      if($out_turnier["won"] > 0){
+        $output .= "Die Begegnung wurde bereits ausgetragen und das Ergebnis eingetragen.";
+      }elseif($out_turnier['ready_a'] <> "0000-00-00 00:00:00" && $out_turnier['ready_b'] <> "0000-00-00 00:00:00" ){
+        $output .= "<form action='".$_SERVER["REQUEST_URI"]."' method='POST'><input type='submit' name='startServer' value='Server starten'></form>";
+      }else{
+        $output .= "Es sind nicht alle Spieler bereit.";
+      }
+    }elseif($server["status"] == "running"){
+      $output .= "<div style='padding-top: 5px; padding-left: 5px;'>";
+      $output .= "<b>".$server["ip"].":".$server["port"]."</b><br>";
+      $output .= "Name: ".$server["variables"]["name"]."<br>";
+      $output .= "RCON: ".$server["variables"]["rcon"]."<br>";
+      $output .= "Server-Passwort: ".$server["variables"]["pw"]."<br>";
+      $output .= "<br><b>Der Server wird automatisch gestoppt, sobald das <a href='/turnier/?do=contest&id=".$_GET["tcid"]."'>Ergebnis</a> eingetragen wurde.</b>";
+      $output .= "</div>";
+    }else{
+      $output .= "Der Server-Status konnte nicht abgefragt werden.";
+    }
+    
+    $output .= "</td>
+        </tr>
+      </tbody>
+    </table>";
+  }
 }else $output .= "<br><br>Es ist ein Fehler aufgetreten.";
 
 $PAGE->render( utf8_decode(utf8_encode($output) ) );
