@@ -163,7 +163,7 @@ function restart_server($running_id){
   // Game starten
   $query = mysql_query("SELECT * FROM games WHERE id = '".$running["gameid"]."' LIMIT 1",$db);
   $game = mysql_fetch_assoc($query);
-  if(!starte_cmd($server,$running["cmd"],$running["screen"],$game["folder"])){ // Server starten ...
+  if(!starte_cmd($server,str_replace("\'","'",$running["cmd"]),$running["screen"],$game["folder"])){ // Server starten ...
     echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
   }else{
     echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";

@@ -43,7 +43,7 @@ if($_POST["anlegen"]){
       echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
     }else{
       // Und in die "running"-Tabelle einfuegen
-      mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".$cmd."', score = '".$game["score"]."', vars = '".$values."'");
+      mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."'");
       echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
     }
   }

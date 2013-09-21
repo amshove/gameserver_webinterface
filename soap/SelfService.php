@@ -152,6 +152,12 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
 
     // Startet einen Server fur das Match
     function startServer($tcid,$turnierid,$variables){
+      if(mysql_num_rows(mysql_query("SELECT * FROM running WHERE t_contest_id = '".mysql_real_escape_string($tcid)."'")) > 0){
+        $return[0] = false;
+        $return[1] = "Zu dieser Begegnung ist schon ein Server gestartet.";
+        return $return;
+      }
+
       $query = mysql_query("SELECT * FROM turniere WHERE turnier = '".mysql_real_escape_string($turnierid)."' LIMIT 1");
       if(mysql_num_rows($query) < 1){
         $return[0] = false;
@@ -168,7 +174,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       while($row = mysql_fetch_assoc($query)){
         $score_used = @mysql_result(mysql_query("SELECT SUM(score) AS sum FROM running WHERE serverid = '".$row["id"]."' LIMIT 1"),0,"sum");
         if(!$score_used) $score_used = 0;
-        if(($row["score"]-$score_used) > $game["score"]){
+        if(($row["score"]-$score_used) >= $game["score"]){
           $server = $row;
           break;  // Einen Server zum starten gefunden
         }
@@ -208,7 +214,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
           return $return;
         }else{
           // Und in die "running"-Tabelle einfuegen
-          mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".$cmd."', score = '".$game["score"]."', vars = '".$values."', t_contest_id = '".$tcid."'");
+          mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."', t_contest_id = '".$tcid."'");
           $return[0] = true;
           $return[1] = "Server erfolgreich gestartet";
           return $return;
