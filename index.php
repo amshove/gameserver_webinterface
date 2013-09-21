@@ -114,6 +114,7 @@ if(!$logged_in){
   if($_SESSION["ad_level"] >= 4) echo " | <a class='navi' href='index.php?page=games'>Games administrieren</a>";
   if($_SESSION["ad_level"] >= 4) echo " | <a class='navi' href='index.php?page=turniere'>Turniere administrieren</a>";
   if($_SESSION["ad_level"] >= 5) echo " | <a class='navi' href='index.php?page=user'>User administrieren</a>";
+  if($_SESSION["ad_level"] >= 5) echo " | <a class='navi' href='index.php?page=cfgcheck'>Config Check</a>";
   echo " | <a class='navi' href='index.php?logout=true'>Logout</a>";
   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font style='font-size: 10px'>Gameserver Webinterface by <a style='color:#FFFFFF; font-size: 10px;' href='http://www.amshove.net/'>Torsten Amshove</a></font>";
   echo "</div>";
@@ -124,6 +125,7 @@ if(!$logged_in){
     case "games": include("games.php"); break;
     case "turniere": include("turniere.php"); break;
     case "user": include("user.php"); break;
+    case "cfgcheck": include("cfgcheck.php"); break;
     default: include("home.php"); break;
   }
 }
