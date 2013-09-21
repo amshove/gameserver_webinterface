@@ -69,7 +69,7 @@ WICHTIG: Nutzt den oben eingerichteten User mit den wenigen Rechten und mit gute
 ``<tr>``  
 ``  <td class="msgrow1"  colspan="2" style="padding: 2px 6px;">``  
 ``    <div align="center">``  
-``      <input type="button" value="Contest-Server starten" onclick="location.href='/turnier_server/?id={$tcid}&round={$round}';" style="font-weight: bold;"/>``  
+``      <input type="button" value="Contest-Server starten" onclick="location.href='/turnier_server/?tcid={$tcid}&round={$round}';" style="font-weight: bold;"/>``  
 ``    </div>``  
 ``  </td>``  
 ``</tr>``  
