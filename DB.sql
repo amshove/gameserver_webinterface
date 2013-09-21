@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS `turniere` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `game` int(10) unsigned NOT NULL,
   `turnier` int(11) NOT NULL,
-  `vars` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
