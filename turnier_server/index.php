@@ -110,8 +110,8 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
       // Variablen, die im CMD ersetzt werden sollen:
       $start_vars = array(
         "name" => "Contest ".$out_turnier['tcid']." - ".$team_a." vs ".$team_b." - ".escapeshellarg($_GET['round']),
-        "rcon" => "TODO_rcon",
-        "pw" => "TODO_pw"
+        "rcon" => substr(md5(rand()),0,5),
+        "pw" => substr(md5(rand()),0,5)
       );
   
       try{
