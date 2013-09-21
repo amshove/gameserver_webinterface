@@ -62,14 +62,14 @@ Anbindung an dotlan Turniersystem
 WICHTIG: Nutzt den oben eingerichteten User mit den wenigen Rechten und mit gutem Passwort!!
 4. Auf dem Gameserver Webinterface Server in der config.inc.php ein sichere SOAP-PW eintragen ($soap_user und $soap_pw)
 5. Das Verzeichnis "turnier_server" auf den dotlan-Server in das dotlan-Verzeichnis verschieben und in der index.php das gleiche SOAP-PW eintragen ($soap_user und $soap_pw)
-6. Die Dotlan-Templates um einen Button erweitern (html/templates/<tpl>/turnier/turnier_contest_single.tpl und turnier_contest_team.tpl):  
+6. Die Dotlan-Templates um einen Button erweitern (html/templates/tpl_name/turnier/turnier_contest_single.tpl und turnier_contest_team.tpl):  
 ``<tr>``  
 ``  <td class="msghead3" colspan="2" style="padding: 2px 6px;">Contest-Server:</td>``  
 ``</tr>``  
 ``<tr>``  
 ``  <td class="msgrow1"  colspan="2" style="padding: 2px 6px;">``  
 ``    <div align="center">``  
-``      <input type="button" value="Contest-Server starten" onclick="location.href='/turnier/contest.php?id={$tcid}&round={$round}';" style="font-weight: bold;"/>``  
+``      <input type="button" value="Contest-Server starten" onclick="location.href='/turnier_server/?id={$tcid}&round={$round}';" style="font-weight: bold;"/>``  
 ``    </div>``  
 ``  </td>``  
 ``</tr>``  
