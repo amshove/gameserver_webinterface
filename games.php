@@ -106,8 +106,8 @@ if($_POST["add"] || $_POST["edit"]){
   if(empty($_POST["name"]) || empty($_POST["cmd"])){ // Name und cmd duerfen nicht leer sein
     echo "<div class='meldung_error'>Name und CMD m&uuml;ssen angegeben werden!</div><br>";
     $error = true;
-  }elseif(!preg_match("/^[a-zA-Z0-9_]*$/",$_POST["name"])){ // Name ueberpruefen
-    echo "<div class='meldung_error'>Der Name darf nur aus Buchstaben, Zahlen und Unterstrichen bestehen!</div><br>";
+  }elseif(!preg_match("/^[a-zA-Z0-9_-]*$/",$_POST["name"])){ // Name ueberpruefen
+    echo "<div class='meldung_error'>Der Name darf nur aus Buchstaben, Zahlen, Binde- und Unterstrichen bestehen!</div><br>";
     $error = true;
   }
 
