@@ -106,10 +106,12 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
       // Alles ausser Buchstaben und Zahlen aus den Teamnamen entfernen
       $team_a = preg_replace("/[^a-zA-Z0-9]*/","",$team_a);
       $team_b = preg_replace("/[^a-zA-Z0-9]*/","",$team_b);
-  
+        
+      $servername =  "Contest ".$out_turnier['tcid']." - ".$team_a." vs ".$team_b." - ".escapeshellarg($_GET['round']);
+
       // Variablen, die im CMD ersetzt werden sollen:
       $start_vars = array(
-        "name" => "Contest ".$out_turnier['tcid']." - ".$team_a." vs ".$team_b." - ".escapeshellarg($_GET['round']),
+        "name" => str_replace(" ","_",$servername),
         "rcon" => substr(md5(rand()),0,5),
         "pw" => substr(md5(rand()),0,5)
       );
