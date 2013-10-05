@@ -43,7 +43,7 @@ function parse_cmd($cmd){
   while(true){
     preg_match("/(##[a-zA-Z0-9]*##)/",$cmd,$matches);
     if(!empty($matches[1])){
-      if($matches[1] != "##port##"){
+      if($matches[1] != "##port##" && $matches[1] != "##port1##"){
         $vars[] = $matches[1];
       }
       $cmd = str_replace($matches[1],"",$cmd);
@@ -56,7 +56,7 @@ function parse_cmd($cmd){
 function get_port($server,$port){
   global $ssh_string;
   if(trim(shell_exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"echo 1\"")) == 1){
-    for($i=0; $i<=20; $i++){
+    for($i=0; $i<=100; $i++){
       exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"netstat -tuln | grep $port\"",$retarr,$rc);
       if($rc == 1) return $port;
       else $port++;

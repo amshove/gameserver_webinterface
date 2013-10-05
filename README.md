@@ -89,6 +89,7 @@ Einrichtung
    - Name (Kurzname, ohne sonderzeichen etc - wird für den Screen-Namen benutzt) - z.B. "cs16" oder "css" oder "cod4" oder ...
    - CMD (Befehl zum Starten des Gameservers - hier können Variablen im Format ##varname## benutzt werden)
      - ##port## gibt den Server-Port an - der wird automatisch vergeben beim Starten
+     - ##port1## ist ein weiterer verfügbarer Port, der z.B. für TV-Server verwendet werden kann - der wird automatisch vergeben beim Starten
      - Ansonsten kann man eigene Variablen vergeben, z.B. ##Servername## für den Namen und ##MaxPlayers## für die Anzahl der Spieler
      - Die eigenen Variablen werden beim Starten alle abgefragt
    - Defaults (Default-Werte für die eigenen(!) Variablen getrennt durch Semikolon ";")
