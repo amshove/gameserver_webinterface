@@ -62,6 +62,7 @@ foreach($server as $s){
   
   $min_score = 100000000000000;
   foreach(explode(",",$s["games"]) as $g){ // Games anzeigen
+    if(empty($g)) continue;
     if($games[$g]["score"] < $min_score) $min_score = $games[$g]["score"]; // Mindest-Score fuer Games dieses Servers ermitteln - wird fuer Score-Anzeige-Farbe benoetigt
     echo "<tr>";
     $num = $s["running"][$g];
