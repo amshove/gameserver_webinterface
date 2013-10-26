@@ -58,9 +58,15 @@ function parse_cmd($cmd){
 // Funktion zum bestimmen des naechsten freien Ports
 function get_port($server,$port){
   global $ssh_string, $tmp_dir;
+
+  $query = mysql_query("SELECT port FROM running WHERE serverid = '".$server["id"]."'");
+  $exclude = array();
+  while($row = mysql_fetch_assoc($query)) $exclude[] = $row["port"];  
+
   if(trim(shell_exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"echo 1\"")) == 1){
     for($i=0; $i<=100; $i++){
-      if(file_exists($tmp_dir."/".$server["ip"]."_".$port)) $port++; // Lockfile existiert bereits?
+      if(in_array($port,$exclude)) $port++;
+      elseif(file_exists($tmp_dir."/".$server["ip"]."_".$port)) $port++; // Lockfile existiert bereits?
       else{
         exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"netstat -tuln | grep $port\"",$retarr,$rc);
         if($rc == 1){
