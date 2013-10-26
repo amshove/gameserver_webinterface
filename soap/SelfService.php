@@ -152,6 +152,8 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
 
     // Startet einen Server fur das Match
     function startServer($tcid,$turnierid,$variables){
+      global $tmp_dir;
+
       if(mysql_num_rows(mysql_query("SELECT * FROM running WHERE t_contest_id = '".mysql_real_escape_string($tcid)."'")) > 0){
         $return[0] = false;
         $return[1] = "Zu dieser Begegnung ist schon ein Server gestartet.";
@@ -209,12 +211,14 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
     
         $screen = $game["name"]."_".$port;
         if(!starte_cmd($server,$cmd,$screen,$game["folder"])){ // Server starten ...
+          unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
           $return[0] = false;
           $return[1] = "Server starten fehlgeschlagen";
           return $return;
         }else{
           // Und in die "running"-Tabelle einfuegen
           mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."', t_contest_id = '".$tcid."'");
+          unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
           $return[0] = true;
           $return[1] = "Server erfolgreich gestartet";
           return $return;

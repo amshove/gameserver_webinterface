@@ -28,6 +28,9 @@ $ad_level = array(
 // SSH-Befehl, mit dem die Verbindung aufgebaut 
 $ssh_string = "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=1 -i $ssh_priv_key";
 
+// TMP Dir
+$tmp_dir = sys_get_temp_dir();
+
 // Mit MySQL verbinden
 $db = mysql_connect($mysql_host,$mysql_user,$mysql_pw) or die(mysql_error());
 mysql_select_db($mysql_db) or die(mysql_error());
@@ -54,12 +57,17 @@ function parse_cmd($cmd){
 
 // Funktion zum bestimmen des naechsten freien Ports
 function get_port($server,$port){
-  global $ssh_string;
+  global $ssh_string, $tmp_dir;
   if(trim(shell_exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"echo 1\"")) == 1){
     for($i=0; $i<=100; $i++){
-      exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"netstat -tuln | grep $port\"",$retarr,$rc);
-      if($rc == 1) return $port;
-      else $port++;
+      if(file_exists($tmp_dir."/".$server["ip"]."_".$port)) $port++; // Lockfile existiert bereits?
+      else{
+        exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"netstat -tuln | grep $port\"",$retarr,$rc);
+        if($rc == 1){
+          touch($tmp_dir."/".$server["ip"]."_".$port); // Lockfile erstellen
+          return $port;
+        }else $port++;
+      }
     }
     return false;
   }else return false;

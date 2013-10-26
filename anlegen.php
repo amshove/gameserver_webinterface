@@ -51,6 +51,8 @@ if($_POST["anlegen"]){
         mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."'");
         echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
       }
+      unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
+      unlink($tmp_dir."/".$server["ip"]."_".$port1); // Lockfile loeschen
     }
   }
 }
