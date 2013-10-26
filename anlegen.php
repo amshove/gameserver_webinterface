@@ -37,9 +37,13 @@ if($_POST["anlegen"]){
       else{
         $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
         $cmd = str_replace("##port##",$port,$game["cmd"]);
-        $cmd = str_replace("##port1##",$port1,$cmd);
         $values = "port => $port<br>";
-        $values = "port1 => $port1<br>";
+
+        if(strstr($cmd,"##port1##")){
+          $cmd = str_replace("##port1##",$port1,$cmd);
+          $values = "port1 => $port1<br>";
+        }
+
         foreach($vars as $v){
           // Variablen durch Werte ersetzen
           $cmd = str_replace($v,$_POST[$v],$cmd);
