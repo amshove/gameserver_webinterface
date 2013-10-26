@@ -22,37 +22,41 @@ if($_SESSION["ad_level"] >= 1){
 
 if($_POST["anlegen"]){
   // Game starten
-  $query = mysql_query("SELECT * FROM games WHERE id = '".mysql_real_escape_string($_POST["game"])."' LIMIT 1");
-  $game = mysql_fetch_assoc($query);
-  $query = mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_POST["server"])."' LIMIT 1");
-  $server = mysql_fetch_assoc($query);
-  $port = get_port($server,$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
-  if(!$port) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
-  else{
-    $port1 = get_port($server,$port+1); // Port ermitteln - erster freier Port ab ermittelten Port
-    if(!$port1) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
+  if($_POST["server"] <= 0){
+    echo "<div class='meldung_error'>Es wurde kein Server ausgew&auml;hlt, auf dem das Game gestartet werden soll. Wenn kein Server ausgew&auml;hlt werden konnte, sind vermutlich alle Server voll.</div><br>";
+  }else{
+    $query = mysql_query("SELECT * FROM games WHERE id = '".mysql_real_escape_string($_POST["game"])."' LIMIT 1");
+    $game = mysql_fetch_assoc($query);
+    $query = mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_POST["server"])."' LIMIT 1");
+    $server = mysql_fetch_assoc($query);
+    $port = get_port($server,$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
+    if(!$port) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
     else{
-      $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
-      $cmd = str_replace("##port##",$port,$game["cmd"]);
-      $cmd = str_replace("##port1##",$port1,$cmd);
-      $values = "port => $port<br>";
-      $values = "port1 => $port1<br>";
-      foreach($vars as $v){
-        // Variablen durch Werte ersetzen
-        $cmd = str_replace($v,$_POST[$v],$cmd);
-        $values .= substr($v,2,-2)." => ".$_POST[$v]."<br>";
+      $port1 = get_port($server,$port+1); // Port ermitteln - erster freier Port ab ermittelten Port
+      if(!$port1) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
+      else{
+        $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
+        $cmd = str_replace("##port##",$port,$game["cmd"]);
+        $cmd = str_replace("##port1##",$port1,$cmd);
+        $values = "port => $port<br>";
+        $values = "port1 => $port1<br>";
+        foreach($vars as $v){
+          // Variablen durch Werte ersetzen
+          $cmd = str_replace($v,$_POST[$v],$cmd);
+          $values .= substr($v,2,-2)." => ".$_POST[$v]."<br>";
+        }
+        if($_SESSION["ad_level"] >= 4) echo "<div class='meldung_notify'><b>CMD:</b> $cmd</div><br>"; // Fuer Admins wird der Befehl mit angezeigt
+        $screen = $game["name"]."_".$port;
+        if(!starte_cmd($server,$cmd,$screen,$game["folder"])){ // Server starten ...
+          echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
+        }else{
+          // Und in die "running"-Tabelle einfuegen
+          mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."'");
+          echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
+        }
+        unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
+        unlink($tmp_dir."/".$server["ip"]."_".$port1); // Lockfile loeschen
       }
-      if($_SESSION["ad_level"] >= 4) echo "<div class='meldung_notify'><b>CMD:</b> $cmd</div><br>"; // Fuer Admins wird der Befehl mit angezeigt
-      $screen = $game["name"]."_".$port;
-      if(!starte_cmd($server,$cmd,$screen,$game["folder"])){ // Server starten ...
-        echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
-      }else{
-        // Und in die "running"-Tabelle einfuegen
-        mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."'");
-        echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
-      }
-      unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
-      unlink($tmp_dir."/".$server["ip"]."_".$port1); // Lockfile loeschen
     }
   }
 }
