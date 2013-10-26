@@ -154,9 +154,16 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
     function startServer($tcid,$turnierid,$variables){
       global $tmp_dir;
 
+      $lockfile = $tmp_dir."/gswi_soap_starting";
+      while(file_exists($lockfile)){
+        usleep(rand(1000,100000));
+      }
+      touch($lockfile);
+
       if(mysql_num_rows(mysql_query("SELECT * FROM running WHERE t_contest_id = '".mysql_real_escape_string($tcid)."'")) > 0){
         $return[0] = false;
         $return[1] = "Zu dieser Begegnung ist schon ein Server gestartet.";
+        unlink($lockfile);
         return $return;
       }
 
@@ -164,6 +171,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       if(mysql_num_rows($query) < 1){
         $return[0] = false;
         $return[1] = "Turnier wurde keinem Gameserver zugeordnet.";
+        unlink($lockfile);
         return $return;
       }else{
         $query2 = mysql_query("SELECT * FROM games WHERE id = '".mysql_result($query,0,"game")."' LIMIT 1");
@@ -184,6 +192,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       if(!$server){
         $return[0] = false;
         $return[1] = "Kein Server frei ..";
+        unlink($lockfile);
         return $return; // Keinen freien Server gefunden ...
       }
     
@@ -198,6 +207,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       if(!$port){
         $return[0] = false;
         $return[1] = "Kein Port gefunden ..";
+        unlink($lockfile);
         return $return;
       }else{
         $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
@@ -214,6 +224,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
           unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
           $return[0] = false;
           $return[1] = "Server starten fehlgeschlagen";
+          unlink($lockfile);
           return $return;
         }else{
           // Und in die "running"-Tabelle einfuegen
@@ -221,11 +232,13 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
           unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
           $return[0] = true;
           $return[1] = "Server erfolgreich gestartet";
+          unlink($lockfile);
           return $return;
         }
       }
       // $return[0] - true/false - Server (nicht) erfolgreich gestartet
       // $return[1] - (Fehler-)meldung
+      unlink($lockfile);
     }
 
     #$server = new SoapServer("http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php?wsdl");
