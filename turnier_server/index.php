@@ -113,7 +113,7 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
       $start_vars = array(
         "name" => str_replace(" ","_",$servername),
         "rcon" => substr(md5(rand()),0,3),
-        "pw" => substr(md5(rand()),0,5)
+        "pw" => substr(md5(rand()),0,3)
       );
   
       try{
