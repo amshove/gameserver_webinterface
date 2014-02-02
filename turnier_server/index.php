@@ -143,6 +143,27 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
     // $server["variables"][] - Array mit allen Variablen, die zum Starten des Games gefuellt wurden (key => value)
     // $server["name"]        - Hostname des Servers
     // $server["ip"]          - IP des Servers
+
+    // Server restarten
+    if($_POST["restartServer"]){
+      try{
+        $result = $client->restartServer($server["id"]);
+      }catch(Exception $e){
+        $output .= "restartServer ERROR: ".$e->getMessage();
+      }
+
+      if($result){
+        $output .= "<br>Server erfolgreich neu gestartet.<br>";
+      }else{
+        $output .= "<br>Beim neu starten des Servers ist ein Fehler aufgetreten.</br>";
+      }
+
+      try{
+        $server = $client->getServer($_GET["tcid"]);
+      }catch(Exception $e){
+        $output .= "getServer ERROR: ".$e->getMessage();
+      }
+    }
   
     $output .= "<br>";
     if($server["status"] == "not running"){
@@ -161,6 +182,7 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
       $output .= "Server-Passwort: ".$server["variables"]["pw"]."<br>";
       $output .= "<br><b>Der Server wird automatisch gestoppt, sobald das <a href='/turnier/?do=contest&id=".$_GET["tcid"]."'>Ergebnis</a> eingetragen wurde.</b>";
       $output .= "</div>";
+      $output .= "<form action='".$_SERVER["REQUEST_URI"]."' method='POST'><input type='submit' name='restartServer' value='Server neu starten' onClick='return confirm(\"Server wirklich restarten?\");'></form>";
     }else{
       $output .= "Der Server-Status konnte nicht abgefragt werden.";
     }
