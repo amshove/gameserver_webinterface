@@ -23,8 +23,10 @@ include_once("../global.php");
 
 // Config
 $soap_ip = "192.168.0.185"; // IP des gameserver Webinterface
-$soap_user = "game_wi"; // $soap_user aus config.inc.php auf dem mgameserver Webinterface
+$soap_user = "game_wi"; // $soap_user aus config.inc.php auf dem gameserver Webinterface
 $soap_pw = "changeme"; // $soap_pw aus config.inc.php auf dem gameserver Webinterface
+
+$faq_id = "20#faq_18"; // ID zu dem FAQ-Artikel, wenn der Hinweis angezeigt werden soll
 
 ////////////////////////////////////////////////
 // Seitettietel
@@ -163,8 +165,11 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
       $output .= "Der Server-Status konnte nicht abgefragt werden.";
     }
     
-    $output .= "<br><br>";
-    $output .= "<b>Hier erfahrt ihr, wie man die jeweiligen Gameserver bedient: <a href='/artikel/?id=20#faq_18'>FAQ</a></b>";
+    if(!empty($faq_id)){
+      $output .= "<br><br>";
+      $output .= "<b>Hier erfahrt ihr, wie man die jeweiligen Gameserver bedient: <a href='/artikel/?id=$faq_id'>FAQ</a></b>";
+    }
+
     $output .= "</td>
         </tr>
       </tbody>
