@@ -42,7 +42,7 @@ $default_pw = "default";
 $image_height = "15";
 
 // Dotlan Zugriff
-$dotlan_soap = "http://dotlan/admin/projekt/SOAP.php";
+#$dotlan_soap = "http://dotlan/admin/projekt/SOAP.php";
 
 #### Dotlan Turniere ####
 $dotlan_mysql_host = "dotlan";
