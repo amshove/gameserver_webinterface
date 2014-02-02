@@ -179,9 +179,11 @@ function restart_server($running_id){
   $game = mysql_fetch_assoc($query);
   if(!starte_cmd($server,str_replace("\'","'",$running["cmd"]),$running["screen"],$game["folder"])){ // Server starten ...
     echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
+    return false;
   }else{
     echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
   }
+  return true;
 }
 
 // Funktion zum Auflisten aller Server, denen ein bestimmtes Game zugewiesen ist
