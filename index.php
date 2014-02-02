@@ -53,6 +53,20 @@ if($_POST["submit_login"]){
       $_SESSION["ad_level"] = mysql_result($query,0,"ad_level");
       $logged_in = true;
       if($_POST["pw"] == $default_pw) $set_pw = true; // Wenn das das default-pw war, dann aendern
+    }else{ // try SOAP to dotlan
+      $soap_client = soap_connect(mysql_escape_string($_POST["login"]),mysql_escape_string($_POST["pw"]));
+      if($soap_client){
+        try{
+          $me = $soap_client->getMe();
+          $rights = $soap_client->getRechte();
+          if($rights["view"]){
+            $logged_in = true;
+            $_SESSION["user_name"] = $me["nick"];
+            if($rights["admin"]) $_SESSION["ad_level"] = 4;
+            else $_SESSION["ad_level"] = 3;
+          }
+        }catch(Exception $e){ }
+      }
     }
   }
 }elseif($_POST["submit_pw"]){

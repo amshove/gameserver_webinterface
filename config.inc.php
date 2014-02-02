@@ -41,6 +41,9 @@ $default_pw = "default";
 // Groesse der Bilder
 $image_height = "15";
 
+// Dotlan Zugriff
+$dotlan_soap = "http://dotlan/admin/projekt/SOAP.php";
+
 #### Dotlan Turniere ####
 $dotlan_mysql_host = "dotlan";
 $dotlan_mysql_user = "gameserver_wi";
