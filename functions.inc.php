@@ -322,7 +322,7 @@ function soap_connect($user,$pw){
   if(empty($dotlan_soap)) return false;
 
   try{
-    $client = new SoapClient($dotlan_soap."?wsdl",array("login"=>$user,"password"=>$pw,"user_agent"=>"gameserver_webinterface"));
+    $client = new SoapClient($dotlan_soap."?wsdl",array("login"=>$user,"password"=>$pw,"user_agent"=>"gameserver_webinterface","encoding"=>"ISO-8859-1"));
     return $client;
   }catch(Exception $e){
     die("SOAP ERROR: ".$e->getMessage());
