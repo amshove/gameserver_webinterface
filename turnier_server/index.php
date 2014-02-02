@@ -163,6 +163,8 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
       $output .= "Der Server-Status konnte nicht abgefragt werden.";
     }
     
+    $output .= "<br><br>";
+    $output .= "<b>Hier erfahrt ihr, wie man die jeweiligen Gameserver bedient: <a href='/artikel/?id=20#faq_18'>FAQ</a></b>";
     $output .= "</td>
         </tr>
       </tbody>
