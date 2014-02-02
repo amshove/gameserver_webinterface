@@ -54,7 +54,7 @@ if($_POST["submit_login"]){
       $logged_in = true;
       if($_POST["pw"] == $default_pw) $set_pw = true; // Wenn das das default-pw war, dann aendern
     }else{ // try SOAP to dotlan
-      $soap_client = soap_connect(mysql_escape_string($_POST["login"]),mysql_escape_string($_POST["pw"]));
+      $soap_client = soap_connect($_POST["login"],$_POST["pw"]);
       if($soap_client){
         try{
           $me = $soap_client->getMe();
