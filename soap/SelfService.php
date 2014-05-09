@@ -213,7 +213,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       }else{
         $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
         $cmd = str_replace("##port##",$port,$game["cmd"]);
-        $cmd = str_replace("##port1##",$port1,$game["cmd"]);
+        $cmd = str_replace("##port1##",$port1,$cmd);
         $values = "port => $port<br>";
         $values = "port1 => $port1<br>";
         foreach($vars as $v){
