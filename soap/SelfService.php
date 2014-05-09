@@ -70,7 +70,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
     
     <service name='getServerService'>
       <port name='getServerPort' binding='getServerBinding'>
-        <soap:address location='http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php'/>
+        <soap:address location='http://".$_SERVER['HTTP_HOST']."/gs_wi/soap/SelfService.php'/>
       </port>
     </service>
 
@@ -106,48 +106,10 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
         </output>
       </operation>
     </binding> 
-
+    
     <service name='startServerService'>
       <port name='startServerPort' binding='startServerBinding'>
-        <soap:address location='http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php'/>
-      </port>
-    </service>
-
-
-
-    <message name='restartServerRequest'>
-      <part name='id' type='xsd:int'/>
-    </message> 
-    <message name='restartServerResponse'>
-      <part name='Result' type='xsd:boolean'/>
-    </message> 
-    
-    <portType name='restartServerPortType'>
-      <operation name='restartServer'>
-        <input message='tns:restartServerRequest'/>
-        <output message='tns:restartServerResponse'/>
-      </operation>
-    </portType> 
-    
-    <binding name='restartServerBinding' type='tns:restartServerPortType'>
-      <soap:binding style='rpc'
-        transport='http://schemas.xmlsoap.org/soap/http'/>
-      <operation name='restartServer'>
-        <soap:operation soapAction='urn:SelfService#restartServer'/>
-        <input>
-          <soap:body use='encoded' namespace='urn:SelfService'
-            encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
-        </input>
-        <output>
-          <soap:body use='encoded' namespace='urn:SelfService'
-            encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
-        </output>
-      </operation>
-    </binding>
-    
-    <service name='restartServerService'>
-      <port name='restartServerPort' binding='restartServerBinding'>
-        <soap:address location='http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php'/>
+        <soap:address location='http://".$_SERVER['HTTP_HOST']."/gs_wi/soap/SelfService.php'/>
       </port>
     </service>
     </definitions>";
@@ -161,7 +123,6 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       $query = mysql_query("SELECT * FROM running WHERE t_contest_id = '$tcid' LIMIT 1");
       if(mysql_num_rows($query) > 0){
         $val = mysql_fetch_assoc($query);
-        $server["id"] = $val["id"];
         $server["status"] = "running";
         $server["screen"] = $val["screen"];
         $server["port"] = $val["port"];
@@ -181,7 +142,6 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       }
 
       return $server;
-      // $server["id"]          - interne ID des Servers (wenn status == running)
       // $server["status"]      - running / not running
       // $server["screen"]      - Name des Screens (eher fuer debugging als fuer den User)
       // $server["port"]        - Port des Servers
@@ -244,7 +204,8 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
     
       // CMD zusammenbauen
       $port = get_port($server,$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
-      if(!$port){
+      $port1 = get_port($server,$game["start_port"]+1); // Port ermitteln - erster freier Port ab start_port+1
+      if(!$port || !$port1){
         $return[0] = false;
         $return[1] = "Kein Port gefunden ..";
         unlink($lockfile);
@@ -252,7 +213,9 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       }else{
         $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
         $cmd = str_replace("##port##",$port,$game["cmd"]);
+        $cmd = str_replace("##port1##",$port1,$game["cmd"]);
         $values = "port => $port<br>";
+        $values = "port1 => $port1<br>";
         foreach($vars as $v){
           // Variablen durch Werte ersetzen
           $cmd = str_replace($v,$replace_vars[$v],$cmd);
@@ -281,17 +244,10 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       unlink($lockfile);
     }
 
-    // Startet einen Server neu
-    function restartServer($id){
-      if(!restart_server(mysql_real_escape_string($id))) return false;
-      else return true;
-    }
-
     #$server = new SoapServer("http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php?wsdl");
-    $server = new SoapServer("http://127.0.0.1/soap/SelfService.php?wsdl");
+    $server = new SoapServer("http://127.0.0.1/gs_wi/soap/SelfService.php?wsdl");
     $server->addFunction("getServer");
     $server->addFunction("startServer");
-    $server->addFunction("restartServer");
     $server->handle();
   }
 }
