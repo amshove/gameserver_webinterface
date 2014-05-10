@@ -21,7 +21,7 @@
 require("../config.inc.php");
 require("../functions.inc.php");
 
-if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] != $soap_user || $_SERVER['PHP_AUTH_PW'] != $soap_pw || $soap_pw == "changeme")){
+if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER["SERVER_ADDR"] && (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] != $soap_user || $_SERVER['PHP_AUTH_PW'] != $soap_pw || $soap_pw == "changeme")){
   header('WWW-Authenticate: Basic realm="Gameserver Webinterface SOAP"');
   header('HTTP/1.0 401 Unauthorized');
   echo "Don't Panic!";
@@ -70,7 +70,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
     
     <service name='getServerService'>
       <port name='getServerPort' binding='getServerBinding'>
-        <soap:address location='http://".$_SERVER['HTTP_HOST']."/gs_wi/soap/SelfService.php'/>
+        <soap:address location='http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php'/>
       </port>
     </service>
 
@@ -109,7 +109,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
     
     <service name='startServerService'>
       <port name='startServerPort' binding='startServerBinding'>
-        <soap:address location='http://".$_SERVER['HTTP_HOST']."/gs_wi/soap/SelfService.php'/>
+        <soap:address location='http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php'/>
       </port>
     </service>
     </definitions>";
@@ -244,8 +244,8 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && (!isset($_SERVER['PHP_AUTH_USER']) 
       unlink($lockfile);
     }
 
-    #$server = new SoapServer("http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php?wsdl");
-    $server = new SoapServer("http://127.0.0.1/gs_wi/soap/SelfService.php?wsdl");
+    $server = new SoapServer("http://".$_SERVER['HTTP_HOST']."/soap/SelfService.php?wsdl");
+    #$server = new SoapServer("http://127.0.0.1/soap/SelfService.php?wsdl");
     $server->addFunction("getServer");
     $server->addFunction("startServer");
     $server->handle();
