@@ -109,6 +109,8 @@ if($_POST["add"] || $_POST["edit"]){
   }elseif(!preg_match("/^[a-zA-Z0-9_-]*$/",$_POST["name"])){ // Name ueberpruefen
     echo "<div class='meldung_error'>Der Name darf nur aus Buchstaben, Zahlen, Binde- und Unterstrichen bestehen!</div><br>";
     $error = true;
+  }elseif(!preg_match("/^[0-9,]*$/",$_POST["port_blacklist"])){ // Port-Blacklist muss Kommasepariert sein
+    echo "<div class='meldung_error'>Die Port Blacklist darf nur aus Zahlen und Kommas bestehen!</div><br>";
   }
 
   if($error){
@@ -127,16 +129,17 @@ if($_POST["add"] || $_POST["edit"]){
     $cmd = mysql_real_escape_string($_POST["cmd"]);
     $defaults = mysql_real_escape_string($_POST["defaults"]);
     $start_port = mysql_real_escape_string($_POST["start_port"]);
+    $port_blacklist = mysql_real_escape_string($_POST["port_blacklist"]);
     $score = mysql_real_escape_string($_POST["score"]);
     if(is_array($_POST["server"])) $server = $_POST["server"];
     else $server = "";
     if($_POST["add"]){
       // Game anlegen
-      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', score = '".$score."'");
+      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."'");
       $id = mysql_insert_id();
     }elseif($_POST["edit"]){
       // Game aendern
-      mysql_query("UPDATE games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', score = '".$score."' WHERE id = '".$id."' LIMIT 1");
+      mysql_query("UPDATE games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."' WHERE id = '".$id."' LIMIT 1");
       $query = get_server_with_game($id);
       while($row = mysql_fetch_assoc($query)){ // Alle Verweise zu dem Game loeschen - werden gleich wiederhergestellt
         $old = explode(",",$row["games"]);
@@ -199,6 +202,11 @@ echo "</select></td>
   <tr>
     <td>Startport:</td>
     <td><input type='text' name='start_port' value='".$value["start_port"]."'></td>
+  </tr>
+  <tr>
+    <td>Port Blacklist:</td>
+    <td><input type='text' name='port_blacklist' value='".$value["port_blacklist"]."'><br>
+        Ports, die ausgelassen werden sollen - Kommasepariert (z.B. f&uuml;r cs:go 27020,27021,27022,27023,27024)</td>
   </tr>
   <tr>
     <td>Score:</td>

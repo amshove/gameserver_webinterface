@@ -56,8 +56,10 @@ function parse_cmd($cmd){
 }
 
 // Funktion zum bestimmen des naechsten freien Ports
-function get_port($server,$port){
+function get_port($server,$port,$blacklist = ""){
   global $ssh_string, $tmp_dir;
+
+  $blacklist = explode(",",$blacklist);
 
   $query = mysql_query("SELECT port FROM running WHERE serverid = '".$server["id"]."'");
   $exclude = array();
@@ -66,6 +68,7 @@ function get_port($server,$port){
   if(trim(shell_exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"echo 1\"")) == 1){
     for($i=0; $i<=100; $i++){
       if(in_array($port,$exclude)) $port++;
+      elseif(in_array($port,$blacklist)) $port++;
       elseif(file_exists($tmp_dir."/".$server["ip"]."_".$port)) $port++; // Lockfile existiert bereits?
       else{
         exec($ssh_string." ".$server["user"]."@".$server["ip"]." \"netstat -tuln | grep $port\"",$retarr,$rc);

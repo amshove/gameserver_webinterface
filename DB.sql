@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `games` (
   `cmd` text NOT NULL,
   `defaults` text NOT NULL,
   `start_port` int(11) NOT NULL,
+  `port_blacklist` varchar(250) NOT NULL,
   `score` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;

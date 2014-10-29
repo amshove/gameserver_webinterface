@@ -29,10 +29,10 @@ if($_POST["anlegen"]){
     $game = mysql_fetch_assoc($query);
     $query = mysql_query("SELECT * FROM server WHERE id = '".mysql_real_escape_string($_POST["server"])."' LIMIT 1");
     $server = mysql_fetch_assoc($query);
-    $port = get_port($server,$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
+    $port = get_port($server,$game["start_port"],$game["port_blacklist"]); // Port ermitteln - erster freier Port ab start_port
     if(!$port) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
     else{
-      $port1 = get_port($server,$port+1); // Port ermitteln - erster freier Port ab ermittelten Port
+      $port1 = get_port($server,$port+1,$game["port_blacklist"]); // Port ermitteln - erster freier Port ab ermittelten Port
       if(!$port1) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
       else{
         $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
