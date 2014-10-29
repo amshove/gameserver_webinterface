@@ -47,7 +47,7 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   echo "<div class='meldung_notify'>";
   echo "Um den dauerhaften Zugang vom Webinterface auf den Server einzurichten muss einmalig das Passwort angegeben werden - das wird nicht gespeichert.<br>";
   echo "<form action='index.php?page=server&cmd=access&id=".$_GET["id"]."' method='POST'>";
-  echo "Passwort f&uuml;r <b>".$server["user"]."@".$server["name"]."</b>: <input type='password' name='pw' size='10'><input type='submit' value='Zugang einrichten'>";
+  echo "Passwort f&uuml;r <b>".$server["user"]."@".$server["ip"]." (".$server["name"].")</b>: <input type='password' name='pw' size='10'><input type='submit' value='Zugang einrichten'>";
   echo "</form></div><br>";
 }elseif($_GET["cmd"] == "reboot" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Server rebooten
