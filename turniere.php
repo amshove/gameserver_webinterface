@@ -78,7 +78,7 @@ echo "</select></td>
   <tr>
     <td>Dotlan Turnier:</td>
     <td><select name='turnier'>";
-$query = mysql_query("SELECT id,name FROM events WHERE active = 1",$dotlan);
+$query = mysql_query("SELECT id,name FROM events WHERE active = 1 ORDER BY id DESC",$dotlan);
 while($row = mysql_fetch_assoc($query)){
   echo "<optgroup label='".$row["name"]."'>";
   $query2 = mysql_query("SELECT tid,tname FROM t_turnier WHERE teventid = '".$row["id"]."' ORDER BY tname",$dotlan);
