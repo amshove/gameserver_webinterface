@@ -203,8 +203,8 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER
       }
     
       // CMD zusammenbauen
-      $port = get_port($server,$game["start_port"],$game["port_blacklist"]); // Port ermitteln - erster freier Port ab start_port
-      $port1 = get_port($server,$game["start_port"]+1,$game["port_blacklist"]); // Port ermitteln - erster freier Port ab start_port+1
+      $port = get_port($server,$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
+      $port1 = get_port($server,$game["start_port"]+1); // Port ermitteln - erster freier Port ab start_port+1
       if(!$port || !$port1){
         $return[0] = false;
         $return[1] = "Kein Port gefunden ..";
@@ -238,6 +238,8 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER
           unlink($lockfile);
           return $return;
         }
+        unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
+        unlink($tmp_dir."/".$server["ip"]."_".$port1); // Lockfile loeschen
       }
       // $return[0] - true/false - Server (nicht) erfolgreich gestartet
       // $return[1] - (Fehler-)meldung
