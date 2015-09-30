@@ -48,7 +48,7 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
 }elseif($_GET["cmd"] == "sync" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Game Syncen - Formular
   $server = array();
-  $query = get_server_with_game(mysql_real_escape_string($_GET["id"]));
+  $query = mysql_query("SELECT * FROM server WHERE active = 1 ORDER BY name",$db);
   while($row = mysql_fetch_assoc($query)) $server[] = $row;
 
   echo "<form action='index.php?page=games' method='POST'>";
