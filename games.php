@@ -78,7 +78,7 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Game Syncen - Prozesse starten
   $game = mysql_fetch_assoc(mysql_query("SELECT * FROM games WHERE id = '".mysql_real_escape_string($_POST["gameid"])."' LIMIT 1"));
   $server = array();
-  $query = get_server_with_game(mysql_real_escape_string($_POST["gameid"]));
+  $query = mysql_query("SELECT * FROM server WHERE active = 1");
   while($row = mysql_fetch_assoc($query)) $server[$row["id"]] = $row;
 
   if(!$server[$_POST["src"]]) echo "<div class='meldung_error'>Quell-Server wurde nicht gefunden.</div><br>";
