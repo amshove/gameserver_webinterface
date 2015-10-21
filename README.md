@@ -3,28 +3,28 @@ Gameserver Webinterface
 
 Features
 --------
-Das Gameserver Webinterface ist dafür gedacht, auf einer LAN-Party bestimmte Gameserver (CS, COD, ..) auf Linux-Servern zu starten.
-Vorteil daran ist, man kann das Webinterface für etliche Server nutzen und muss nicht für jeden Server einzeln auf die Konsole gehen.
-Außerdem kann die Webseite z.B. an den Turnier-Support übergeben werden, damit diese ohne Linux- und Server-Kenntnisse mit einem Knopfdruck Gameserver bereitstellen können.
-Deswegen auch die unterschiedlichen Rechte für die Benutzer:
- - **User** - darf Server anlegen, killen und sich die Übersicht angucken
- - **Admin** - darf zusätzlich Server und Games einrichten - und darf unter "home" die Liste von gestorbenen Servern aufräumen - und ihm werden weitere Informationen angezeigt (z.B. beim Starten der Befehl, der ausgeführt wird) - und er darf die Server rebooten und herunterfahren
- - **Superadmin** - darf zusätzlich User anlegen und editieren
-Dabei richtet sich der User an den Typischen Turnier-Support, der Gameserver bereitstellt, aber nichts mit den eigentlichen Servern zu tun hat. Dank des Score-Systems braucht der User kein Hintergrundwissen - Wenn er ein Gameserver starten will, werden ihm nur Server zur Auswahl gegeben, auf denen das Game auch läuft, auf denen noch genug Ressourcen frei sind und die erreichbar sind.
-Die Admins sind dann diejenigen, die die Server einrichten und administrieren. Der Cleanup z.B. darf nur von diesen ausgeführt werden, damit sie die Möglichkeit haben, nach Ursachen zu forschen.
-Übrigens: Beim Anlegen eines Users kann kein Passwort gesetzt werden - es wird ein default-Passwort gesetzt, was beim Anmelden vom User geändert werden muss.
+Das Gameserver Webinterface ist dafÃ¼r gedacht, auf einer LAN-Party bestimmte Gameserver (CS, COD, ..) auf Linux-Servern zu starten.
+Vorteil daran ist, man kann das Webinterface fÃ¼r etliche Server nutzen und muss nicht fÃ¼r jeden Server einzeln auf die Konsole gehen.
+AuÃŸerdem kann die Webseite z.B. an den Turnier-Support Ã¼bergeben werden, damit diese ohne Linux- und Server-Kenntnisse mit einem Knopfdruck Gameserver bereitstellen kÃ¶nnen.
+Deswegen auch die unterschiedlichen Rechte fÃ¼r die Benutzer:
+ - **User** - darf Server anlegen, killen und sich die Ãœbersicht angucken
+ - **Admin** - darf zusÃ¤tzlich Server und Games einrichten - und darf unter "home" die Liste von gestorbenen Servern aufrÃ¤umen - und ihm werden weitere Informationen angezeigt (z.B. beim Starten der Befehl, der ausgefÃ¼hrt wird) - und er darf die Server rebooten und herunterfahren
+ - **Superadmin** - darf zusÃ¤tzlich User anlegen und editieren
+Dabei richtet sich der User an den Typischen Turnier-Support, der Gameserver bereitstellt, aber nichts mit den eigentlichen Servern zu tun hat. Dank des Score-Systems braucht der User kein Hintergrundwissen - Wenn er ein Gameserver starten will, werden ihm nur Server zur Auswahl gegeben, auf denen das Game auch lÃ¤uft, auf denen noch genug Ressourcen frei sind und die erreichbar sind.
+Die Admins sind dann diejenigen, die die Server einrichten und administrieren. Der Cleanup z.B. darf nur von diesen ausgefÃ¼hrt werden, damit sie die MÃ¶glichkeit haben, nach Ursachen zu forschen.
+Ãœbrigens: Beim Anlegen eines Users kann kein Passwort gesetzt werden - es wird ein default-Passwort gesetzt, was beim Anmelden vom User geÃ¤ndert werden muss.
 
 ### Featureliste
  - Einfaches Starten und Stoppen von Gameservern per Webinterface
  - Stoppen mehrerer Gameserver gleichzeitig
  - Unterschiedliche Berechtigungen
- - Benutzerdefenierte Variablen in den Start-Befehlen für die Gameserver
- - Default-Werte für die benutzerdefenierten Variablen
- - Zuweisung der Games zu den Servern -> Games können nur auf den passenden Servern gestartet werden
- - Score-System, damit nicht zu viele Gameserver auf einem Server gestartet werden können
- - Übersicht mit laufenden Servern, Games und Scores, sowie farbliche Anzeige freier und ausgefallener Server
+ - Benutzerdefenierte Variablen in den Start-Befehlen fÃ¼r die Gameserver
+ - Default-Werte fÃ¼r die benutzerdefenierten Variablen
+ - Zuweisung der Games zu den Servern -> Games kÃ¶nnen nur auf den passenden Servern gestartet werden
+ - Score-System, damit nicht zu viele Gameserver auf einem Server gestartet werden kÃ¶nnen
+ - Ãœbersicht mit laufenden Servern, Games und Scores, sowie farbliche Anzeige freier und ausgefallener Server
  - Abgeschmierte Gameserver werden farblich markiert
- - Nicht erreichbare Server werden farblich markiert und stehen nicht zum Starten von Games zur Verfügung
+ - Nicht erreichbare Server werden farblich markiert und stehen nicht zum Starten von Games zur VerfÃ¼gung
  - Alle Gameserver werden mit dem Programm "screen" gestartet
  - Passwortlose SSH-Verbindung vom Webinterface per SSH-Key auf die Server
  - Herunterfahren und rebooten einzelner oder aller Server (Linux shutdown)
@@ -34,6 +34,7 @@ Die Admins sind dann diejenigen, die die Server einrichten und administrieren. D
 
 Installation
 ------------
+**ACHTUNG:** Um die Sync-Funktion nutzen zu kÃ¶nnen, muss auf jedem Server (Quelle & Ziel) rsync installiert werden.
 1. Pakete nachinstallieren
 ``apt-get install apache2 libapache2-mod-php5 php5-mysql mysql-server mysql-client sshpass screen``
 1. Daten in das htdocs Verzeichnis entpacken
@@ -80,40 +81,40 @@ Einrichtung
 -----------
 ### Server einrichten
  - Hier gibt man Name, IP, User und Score an
- - Wenn schon Games vorhanden sind, kann man dem Server games zuweisen - nur diese Games können dann auch auf dem Server gestartet werden
+ - Wenn schon Games vorhanden sind, kann man dem Server games zuweisen - nur diese Games kÃ¶nnen dann auch auf dem Server gestartet werden
  - Nach dem Hinzufuegen des Servers, in der Tabelle auf "Zugriff einrichten" klicken - danach kann das Webinterface auf den Server zugreifen
    
 ### Games einrichten
  - Einzugeben ist:
    - Icon (Auflistung aller Dateien im Ordner "images/")
-   - Name (Kurzname, ohne sonderzeichen etc - wird für den Screen-Namen benutzt) - z.B. "cs16" oder "css" oder "cod4" oder ...
-   - CMD (Befehl zum Starten des Gameservers - hier können Variablen im Format ##varname## benutzt werden)
+   - Name (Kurzname, ohne sonderzeichen etc - wird fÃ¼r den Screen-Namen benutzt) - z.B. "cs16" oder "css" oder "cod4" oder ...
+   - CMD (Befehl zum Starten des Gameservers - hier kÃ¶nnen Variablen im Format ##varname## benutzt werden)
      - ##port## gibt den Server-Port an - der wird automatisch vergeben beim Starten
-     - ##port1## ist ein weiterer verfügbarer Port, der z.B. für TV-Server verwendet werden kann - der wird automatisch vergeben beim Starten
-     - Ansonsten kann man eigene Variablen vergeben, z.B. ##Servername## für den Namen und ##MaxPlayers## für die Anzahl der Spieler
+     - ##port1## ist ein weiterer verfÃ¼gbarer Port, der z.B. fÃ¼r TV-Server verwendet werden kann - der wird automatisch vergeben beim Starten
+     - Ansonsten kann man eigene Variablen vergeben, z.B. ##Servername## fÃ¼r den Namen und ##MaxPlayers## fÃ¼r die Anzahl der Spieler
      - Die eigenen Variablen werden beim Starten alle abgefragt
-   - Defaults (Default-Werte für die eigenen(!) Variablen getrennt durch Semikolon ";")
+   - Defaults (Default-Werte fÃ¼r die eigenen(!) Variablen getrennt durch Semikolon ";")
      - Wenn man z.B. ##Servername## und ##MaxPlayers## defeniert hat, kann man als Defaults folgendes angeben: Servername xyz cs Server;11
-     - Damit würden die Felder beim Starten automatisch mit "Servername xyz cs Server" und "11" gefüllt werden
-     - Wichtig: Die Defaults müssen in der Reihenfolge angegeben werden, in der die variablen im CMD auftauchen
-     - Für ##port## kann man keine Defaults angeben
-   - Startport (Port, ab dem der nächste freie Port für den Server verwendet wird)
+     - Damit wÃ¼rden die Felder beim Starten automatisch mit "Servername xyz cs Server" und "11" gefÃ¼llt werden
+     - Wichtig: Die Defaults mÃ¼ssen in der Reihenfolge angegeben werden, in der die variablen im CMD auftauchen
+     - FÃ¼r ##port## kann man keine Defaults angeben
+   - Startport (Port, ab dem der nÃ¤chste freie Port fÃ¼r den Server verwendet wird)
    - Score (Score-Wert, die dieses Game kostet)
    - Server (Liste der Server, auf denen dieses Game laufen kann)
  - Ein Game kann nur auf den Servern gestartet werden, auf denen das Game zugewiesen ist
 
 ### Turniere einrichten
- - Hier wird die Verknüpfung zwischen Gameserver und dotlan-Turnier eingestellt
- - Ein Cronjob läuft jede Minute um die Server von beendeten Begegnungen (Ergebnis wurde eingetragen) automatisch zu stoppen
+ - Hier wird die VerknÃ¼pfung zwischen Gameserver und dotlan-Turnier eingestellt
+ - Ein Cronjob lÃ¤uft jede Minute um die Server von beendeten Begegnungen (Ergebnis wurde eingetragen) automatisch zu stoppen
  - Die Turnierserver werden auf irgendeinem Server gestartet, wo das Game laufen kann (siehe Games einrichten) und wo noch genug Score frei ist
- - Gestartet wird ein Turnierserver von den Usern über das Dotlan-Modul "turnier_server"
+ - Gestartet wird ein Turnierserver von den Usern Ã¼ber das Dotlan-Modul "turnier_server"
 
 ### Die Sache mit den Scores
  - Die Server bekommen bestimmte Scores (z.B. 100)
  - Die Games bekommen bestimmte Scores (z.B. cs16 = 10, css = 20)  
 
- Dann hat der Server 100 Score-Punkte zu verfügung - die Games kosten 20 bzw 10 Score-Punkte
- In diesem Beispiel können also maximal fünf css Gameserver auf dem Server gestartet werden, da 5 x 20 = 100
- Wenn nur vier css Gameserver gestartet werden (4 x 20 = 80) können zusätzlich noch zwei cs16 auf diesem Server gestartet werden (2 x 10 = 20) - Zusammen macht das dann wieder 100
- Wenn auf einem Server nicht mehr genug Score-Punkte für ein Gameserver verfügbar sind, steht dieser nicht zur Verfügung.
- Damit kann man die Last der Server automatisch beschränken und kontrollieren.
+ Dann hat der Server 100 Score-Punkte zu verfÃ¼gung - die Games kosten 20 bzw 10 Score-Punkte
+ In diesem Beispiel kÃ¶nnen also maximal fÃ¼nf css Gameserver auf dem Server gestartet werden, da 5 x 20 = 100
+ Wenn nur vier css Gameserver gestartet werden (4 x 20 = 80) kÃ¶nnen zusÃ¤tzlich noch zwei cs16 auf diesem Server gestartet werden (2 x 10 = 20) - Zusammen macht das dann wieder 100
+ Wenn auf einem Server nicht mehr genug Score-Punkte fÃ¼r ein Gameserver verfÃ¼gbar sind, steht dieser nicht zur VerfÃ¼gung.
+ Damit kann man die Last der Server automatisch beschrÃ¤nken und kontrollieren.
