@@ -10,4 +10,7 @@ CREATE TABLE IF NOT EXISTS `token` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 
-ALTER TABLE `games` ADD `token_pool` INT UNSIGNED NOT NULL 
+ALTER TABLE `games` ADD `token_pool` INT UNSIGNED NOT NULL ;
+
+ALTER TABLE `running` ADD `token` TEXT NOT NULL AFTER `score` ;
+ALTER TABLE `running` ADD `token_pool` int(10) unsigned NOT NULL AFTER `score` ;

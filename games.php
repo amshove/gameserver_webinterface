@@ -193,12 +193,12 @@ echo "</select></td>
   <tr>
     <td>CMD:</td>
     <td><input type='text' name='cmd' value='".$value["cmd"]."' size='100'><br>
-        ##port## & ##port1## f&uuml;r Ports, ##var1## .. f&uuml;r weitere Variablen</td>
+        ##port## & ##port1## f&uuml;r Ports, ##token## f&uuml;r Token, ##var1## .. f&uuml;r weitere Variablen</td>
   </tr>
   <tr>
     <td>Defaults:</td>
     <td><input type='text' name='defaults' value='".$value["defaults"]."' size='100'><br>
-        In der Reihenfolge der Variablen im CMD (ohne ##port## & ##port1##) - Getrennt durch ;</td>
+        In der Reihenfolge der Variablen im CMD (ohne ##port## & ##port1## & ##token##) - Getrennt durch ;</td>
   </tr>
   <tr>
     <td>Startport:</td>

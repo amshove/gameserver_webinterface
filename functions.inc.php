@@ -46,13 +46,34 @@ function parse_cmd($cmd){
   while(true){
     preg_match("/(##[a-zA-Z0-9]*##)/",$cmd,$matches);
     if(!empty($matches[1])){
-      if($matches[1] != "##port##" && $matches[1] != "##port1##"){
+      if($matches[1] != "##port##" && $matches[1] != "##port1##" && $matches[1] != "##token##"){
         $vars[] = $matches[1];
       }
       $cmd = str_replace($matches[1],"",$cmd);
     }else break;
   }
   return $vars;
+}
+
+// Funktion zum Splitten der Token in ein Array
+function split_token($token_pool){
+  $token = explode("\n",str_replace("\r","",$token_pool["token"]));
+  $return = array();
+  foreach($token as $t) $return[] = trim($t);
+  return $return;
+}
+
+// Funktion zum bestimmen des nachesten freien Tokens
+function get_token($token_pool){
+  $used_token = array();
+  $query = mysql_query("SELECT token FROM running WHERE token_pool = '".$token_pool["id"]."'");
+  while($row = mysql_fetch_assoc($query)) $used_token[] = $row["token"];
+  
+  $token = split_token($token_pool);
+  foreach($token as $t){
+    if(!in_array($t,$used_token)) return $t;
+  }
+  return false;
 }
 
 // Funktion zum bestimmen des naechsten freien Ports

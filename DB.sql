@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS `running` (
   `cmd` text NOT NULL,
   `port` int(11) NOT NULL,
   `score` int(11) NOT NULL,
+  `token` text NOT NULL,
+  `token_pool` int(10) unsigned NOT NULL,
   `vars` text NOT NULL,
   `t_contest_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)

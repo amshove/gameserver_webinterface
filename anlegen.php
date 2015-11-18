@@ -35,31 +35,46 @@ if($_POST["anlegen"]){
       $port1 = get_port($server,$port+1,$game["port_blacklist"]); // Port ermitteln - erster freier Port ab ermittelten Port
       if(!$port1) echo "<div class='meldung_error'>Konnte keinen freien Port finden - Server erreichbar?</div><br>";
       else{
-        $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
-        $cmd = str_replace("##port##",$port,$game["cmd"]);
-        $values = "port => $port<br>";
-
-        if(strstr($cmd,"##port1##")){
-          $cmd = str_replace("##port1##",$port1,$cmd);
-          $values = "port1 => $port1<br>";
+        // Werden Token verwendet und gibt es einen freien?
+        $token = "";
+        if($game["token_pool"] > 0){
+          $query = mysql_query("SELECT * FROM token WHERE id = '".$game["token_pool"]."' LIMIT 1");
+          $token_pool = mysql_fetch_assoc($query);
+          $token = get_token($token_pool);
         }
-
-        foreach($vars as $v){
-          // Variablen durch Werte ersetzen
-          $cmd = str_replace($v,$_POST[$v],$cmd);
-          $values .= substr($v,2,-2)." => ".$_POST[$v]."<br>";
+        if($token === false) echo "<div class='meldung_error'>Alle Token bereits vergeben - keinen freien Token gefunden.</div><br>";
+        else{
+          $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
+          $cmd = str_replace("##port##",$port,$game["cmd"]);
+          $values = "port => $port<br>";
+  
+          if(strstr($cmd,"##port1##")){
+            $cmd = str_replace("##port1##",$port1,$cmd);
+            $values = "port1 => $port1<br>";
+          }
+  
+          if(strstr($cmd,"##token##")){
+            $cmd = str_replace("##token##",$token,$cmd);
+            $values = "token => $token<br>";
+          }
+  
+          foreach($vars as $v){
+            // Variablen durch Werte ersetzen
+            $cmd = str_replace($v,$_POST[$v],$cmd);
+            $values .= substr($v,2,-2)." => ".$_POST[$v]."<br>";
+          }
+          if($_SESSION["ad_level"] >= 4) echo "<div class='meldung_notify'><b>CMD:</b> $cmd</div><br>"; // Fuer Admins wird der Befehl mit angezeigt
+          $screen = $game["name"]."_".$port;
+          if(!starte_cmd($server,$cmd,$screen,$game["folder"])){ // Server starten ...
+            echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
+          }else{
+            // Und in die "running"-Tabelle einfuegen
+            mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', token_pool = '".$token_pool["id"]."', token = '".$token."', vars = '".str_replace("'","\'",$values)."'");
+            echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
+          }
+          unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
+          unlink($tmp_dir."/".$server["ip"]."_".$port1); // Lockfile loeschen
         }
-        if($_SESSION["ad_level"] >= 4) echo "<div class='meldung_notify'><b>CMD:</b> $cmd</div><br>"; // Fuer Admins wird der Befehl mit angezeigt
-        $screen = $game["name"]."_".$port;
-        if(!starte_cmd($server,$cmd,$screen,$game["folder"])){ // Server starten ...
-          echo "<div class='meldung_error'>Server konnte nicht gestartet werden.</div><br>";
-        }else{
-          // Und in die "running"-Tabelle einfuegen
-          mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."'");
-          echo "<div class='meldung_ok'>Server erfolgreich gestartet.</div><br>";
-        }
-        unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
-        unlink($tmp_dir."/".$server["ip"]."_".$port1); // Lockfile loeschen
       }
     }
   }
