@@ -126,6 +126,7 @@ if(!$logged_in){
   echo " | <a class='navi' href='index.php?page=overview'>&Uuml;bersicht</a>";
   if($_SESSION["ad_level"] >= 4) echo " | <a class='navi' href='index.php?page=server'>Server administrieren</a>";
   if($_SESSION["ad_level"] >= 4) echo " | <a class='navi' href='index.php?page=games'>Games administrieren</a>";
+  if($_SESSION["ad_level"] >= 4) echo " | <a class='navi' href='index.php?page=token'>Token administrieren</a>";
   if($_SESSION["ad_level"] >= 4) echo " | <a class='navi' href='index.php?page=turniere'>Turniere administrieren</a>";
   if($_SESSION["ad_level"] >= 5) echo " | <a class='navi' href='index.php?page=user'>User administrieren</a>";
   if($_SESSION["ad_level"] >= 5) echo " | <a class='navi' href='index.php?page=cfgcheck'>Config Check</a>";
@@ -137,6 +138,7 @@ if(!$logged_in){
     case "overview": include("overview.php"); break;
     case "server": include("server.php"); break;
     case "games": include("games.php"); break;
+    case "token": include("token.php"); break;
     case "turniere": include("turniere.php"); break;
     case "user": include("user.php"); break;
     case "cfgcheck": include("cfgcheck.php"); break;
