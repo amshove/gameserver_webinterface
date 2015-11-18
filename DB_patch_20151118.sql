@@ -8,3 +8,6 @@ CREATE TABLE IF NOT EXISTS `token` (
   `token` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+
+ALTER TABLE `games` ADD `token_pool` INT UNSIGNED NOT NULL 

@@ -131,15 +131,16 @@ if($_POST["add"] || $_POST["edit"]){
     $start_port = mysql_real_escape_string($_POST["start_port"]);
     $port_blacklist = mysql_real_escape_string($_POST["port_blacklist"]);
     $score = mysql_real_escape_string($_POST["score"]);
+    $token_pool = mysql_real_escape_string($_POST["token_pool"]);
     if(is_array($_POST["server"])) $server = $_POST["server"];
     else $server = "";
     if($_POST["add"]){
       // Game anlegen
-      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."'");
+      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."', token_pool = '".$token_pool."'");
       $id = mysql_insert_id();
     }elseif($_POST["edit"]){
       // Game aendern
-      mysql_query("UPDATE games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."' WHERE id = '".$id."' LIMIT 1");
+      mysql_query("UPDATE games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."', token_pool = '".$token_pool."' WHERE id = '".$id."' LIMIT 1");
       $query = get_server_with_game($id);
       while($row = mysql_fetch_assoc($query)){ // Alle Verweise zu dem Game loeschen - werden gleich wiederhergestellt
         $old = explode(",",$row["games"]);
@@ -213,6 +214,17 @@ echo "</select></td>
     <td><input type='text' name='score' value='".$value["score"]."'></td>
   </tr>
   <tr>
+    <td>Token-Pool:</td>
+    <td><select name='token_pool'><option value='0'>---</option>";
+$query = mysql_query("SELECT id, name FROM token ORDER BY name");
+while($row = mysql_fetch_assoc($query)){
+  echo "<option value='".$row["id"]."' ";
+  if($row["id"] == $value["token_pool"]) echo "selected='selected'";
+  echo ">".$row["name"]."</option>";
+}
+echo "</td></select>
+  </tr>
+  <tr>
     <td>Server:</td>
     <td><select name='server[]' size='5' multiple>";
 $query = mysql_query("SELECT id, name FROM server ORDER BY name");
@@ -239,17 +251,22 @@ echo "<table>
     <th width='350'>defaults</th>
     <th width='50'>Startport</th>
     <th width='50'>Score</th>
+    <th width='100'>Token-Pool</th>
     <th width='100'>&nbsp;</th>
   </tr>";
 
 $query = mysql_query("SELECT * FROM games ORDER BY name");
 while($row = mysql_fetch_assoc($query)){
+  if($row["token_pool"] > 0) $token_pool_name = @mysql_result(mysql_query("SELECT name FROM token WHERE id = '".mysql_real_escape_string($row["token_pool"])."' LIMIT 1"),0,"name");
+  else $token_pool_name = "-";
+
   echo "<tr>
     <td align='center'><img src='images/".$row["icon"]."' height='$image_height'></td>
     <td>".$row["name"]."</td>
     <td>".$row["defaults"]."</td>
     <td>".$row["start_port"]."</td>
     <td>".$row["score"]."</td>
+    <td>".$token_pool_name."</td>
     <td align='center'><a href='index.php?page=games&cmd=edit&id=".$row["id"]."'>edit</a> | <a href='index.php?page=games&cmd=del&id=".$row["id"]."' onClick='return confirm(\"Game wirklich l&ouml;schen?\");'>del</a> | <a href='index.php?page=games&cmd=sync&id=".$row["id"]."'>sync</a></td>
   </tr>";
 }

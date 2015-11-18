@@ -34,6 +34,7 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
 }elseif($_GET["cmd"] == "del" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Token-Pool loeschen
   $id = mysql_real_escape_string($_GET["id"]);
+  mysql_query("UPDATE games SET token_pool = '0' WHERE token_pool = '".$id."'"); // Verweise zuruecksetzen
   mysql_query("DELETE FROM token WHERE id = '".$id."' LIMIT 1");
 }
 
