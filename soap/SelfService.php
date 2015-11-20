@@ -180,6 +180,14 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER
         $game = mysql_fetch_assoc($query2);
       }
 
+      // Game deaktiviert?
+      if($game["active"] == 0){
+        $return[0] = false;
+        $return[1] = "Die Gameserver f&uuml;r dieses Turnier sind momentan auf Grund von Wartungszwecken deaktiviert. Probiere es bitte sp&auml;ter erneut.";
+        unlink($lockfile);
+        return $return;
+      }
+
       // Freien Server suchen
       $server = false;
       $query = get_server_with_game($game["id"]);
