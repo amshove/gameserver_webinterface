@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `games` (
   `score` int(11) NOT NULL,
   `token_pool` int(10) unsigned NOT NULL,
   `connect_cmd` varchar(200) NOT NULL,
+  `active` tinyint(1) NOT NULL, 
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 

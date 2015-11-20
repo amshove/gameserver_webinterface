@@ -34,6 +34,9 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   $query = get_server_with_game($value["id"]);
   $value["server"] = array();
   while($row = mysql_fetch_assoc($query)) $value["server"][] = $row["id"];
+}elseif($_GET["cmd"] == "active" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
+  // Game aktivieren / deaktivieren
+  mysql_query("UPDATE games SET active = IF(active = 0, 1, 0) WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1");
 }elseif($_GET["cmd"] == "del" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Game loeschen
   $id = mysql_real_escape_string($_GET["id"]);
@@ -137,7 +140,7 @@ if($_POST["add"] || $_POST["edit"]){
     else $server = "";
     if($_POST["add"]){
       // Game anlegen
-      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."', token_pool = '".$token_pool."', connect_cmd = '".$connect_cmd."'");
+      mysql_query("INSERT INTO games SET icon = '".$icon."', name = '".$name."', folder = '".$folder."', cmd = '".$cmd."', defaults = '".$defaults."', start_port = '".$start_port."', port_blacklist = '".$port_blacklist."', score = '".$score."', token_pool = '".$token_pool."', connect_cmd = '".$connect_cmd."', active = '1'");
       $id = mysql_insert_id();
     }elseif($_POST["edit"]){
       // Game aendern
@@ -252,6 +255,7 @@ echo "<br><br>";
 // Tabelle
 echo "<table>
   <tr>
+    <th width='40'>Aktiv</th>
     <th width='50'>Icon</th>
     <th width='100'>Name</th>
     <th width='350'>defaults</th>
@@ -268,6 +272,7 @@ while($row = mysql_fetch_assoc($query)){
   else $token_pool_name = "-";
 
   echo "<tr>
+    <td valign='top' style='background-color: ".($row["active"] == 1 ? "#00FF00" : "#FF0000").";' align='center'><a href='index.php?page=games&cmd=active&id=".$row["id"]."'>chg</a></td>
     <td align='center'><img src='images/".$row["icon"]."' height='$image_height'></td>
     <td>".$row["name"]."</td>
     <td>".$row["defaults"]."</td>
