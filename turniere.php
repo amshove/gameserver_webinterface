@@ -100,7 +100,7 @@ echo "</select></td>
 echo "<br><br>";
 
 // Tabelle
-echo "<table>
+echo "<table class='hover_row'>
   <tr>
     <th width='200'>Game</th>
     <th width='200'>Dotlan-Turnier</th>
@@ -126,7 +126,7 @@ $query = mysql_query("SELECT turnier FROM turniere",$db);
 while($row = mysql_fetch_assoc($query)) $tids[] = $row["turnier"];
 
 echo "<b>Turnier-Begegnungen:</b>";
-echo "<table>";
+echo "<table class='hover_row'>";
 echo "  <tr>";
 echo "    <th width='200'>Turnier</th>";
 echo "    <th width='200'>Begegnung</th>";

@@ -77,7 +77,7 @@ foreach($server as $s){
   if(host_check_login($s)) $server_color = "#00FF00"; // Server online? farbe anpassen
   else $server_color = "#FF0000";
   echo "<h3 style='background-color: $server_color; width: 150px'>&nbsp;".$s["name"].".lan (".$s["ip"].")</h3>";
-  echo "<table>
+  echo "<table class='hover_row'>
     <tr>
       <th><input type='checkbox' id='check_$i' onClick='checkAll(\"".$i."\");'></th>
       <th width='50'>Game</th>

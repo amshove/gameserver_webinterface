@@ -148,7 +148,7 @@ echo "</select></td>
 echo "<br><br>";
 
 // Tabelle
-echo "<table>
+echo "<table class='hover_row'>
   <tr>
     <th width='40'>Aktiv</th>
     <th width='40'>Ping</th>

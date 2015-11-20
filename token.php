@@ -97,7 +97,7 @@ echo "<form action='index.php?page=token' method='POST' id='formular' style='dis
 echo "<br><br>";
 
 // Tabelle
-echo "<table>
+echo "<table class='hover_row'>
   <tr>
     <th width='100'>Name</th>
     <th width='350'>Token</th>

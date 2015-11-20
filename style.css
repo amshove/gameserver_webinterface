@@ -67,3 +67,11 @@ h3 {
 
   -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
 }
+
+table.hover_row tr:hover {
+  background-color: #d1d0f8 !important;
+}
+
+table.hover_row tr:nth-child(odd) {
+  background-color: #F0F0F0;
+}
