@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `games` (
   `port_blacklist` varchar(250) NOT NULL,
   `score` int(11) NOT NULL,
   `token_pool` int(10) unsigned NOT NULL,
+  `connect_cmd` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
