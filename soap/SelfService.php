@@ -205,17 +205,31 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER
       // CMD zusammenbauen
       $port = get_port($server,$game["start_port"]); // Port ermitteln - erster freier Port ab start_port
       $port1 = get_port($server,$game["start_port"]+1); // Port ermitteln - erster freier Port ab start_port+1
+      // Werden Token verwendet und gibt es einen freien?
+      $token = "";
+      if($game["token_pool"] > 0){
+        $query = mysql_query("SELECT * FROM token WHERE id = '".$game["token_pool"]."' LIMIT 1");
+        $token_pool = mysql_fetch_assoc($query);
+        $token = get_token($token_pool);
+      }
       if(!$port || !$port1){
         $return[0] = false;
         $return[1] = "Kein Port gefunden ..";
+        unlink($lockfile);
+        return $return;
+      }elseif($token === false){
+        $return[0] = false;
+        $return[1] = "Kein freies Token gefunden ..";
         unlink($lockfile);
         return $return;
       }else{
         $vars = parse_cmd($game["cmd"]); // Variablen aus cmd auslesen
         $cmd = str_replace("##port##",$port,$game["cmd"]);
         $cmd = str_replace("##port1##",$port1,$cmd);
+        $cmd = str_replace("##token##",$token,$cmd);
         $values = "port => $port<br>";
         $values = "port1 => $port1<br>";
+        $values = "token => $token<br>";
         foreach($vars as $v){
           // Variablen durch Werte ersetzen
           $cmd = str_replace($v,$replace_vars[$v],$cmd);
@@ -231,7 +245,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER
           return $return;
         }else{
           // Und in die "running"-Tabelle einfuegen
-          mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', vars = '".str_replace("'","\'",$values)."', t_contest_id = '".$tcid."'");
+          mysql_query("INSERT INTO running SET screen = '".$screen."', serverid = '".$server["id"]."', gameid = '".$game["id"]."', port = '".$port."', cmd = '".str_replace("'","\'",$cmd)."', score = '".$game["score"]."', token_pool = '".$token_pool["id"]."', token = '".$token."', vars = '".str_replace("'","\'",$values)."', t_contest_id = '".$tcid."'");
           unlink($tmp_dir."/".$server["ip"]."_".$port); // Lockfile loeschen
           $return[0] = true;
           $return[1] = "Server erfolgreich gestartet";

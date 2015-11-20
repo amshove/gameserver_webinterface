@@ -50,12 +50,12 @@ if($_POST["anlegen"]){
   
           if(strstr($cmd,"##port1##")){
             $cmd = str_replace("##port1##",$port1,$cmd);
-            $values = "port1 => $port1<br>";
+            $values .= "port1 => $port1<br>";
           }
   
           if(strstr($cmd,"##token##")){
             $cmd = str_replace("##token##",$token,$cmd);
-            $values = "token => $token<br>";
+            $values .= "token => $token<br>";
           }
   
           foreach($vars as $v){
