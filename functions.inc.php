@@ -55,6 +55,37 @@ function parse_cmd($cmd){
   return $vars;
 }
 
+// Funktion zum auslesen der Variablen eines laufenden Servers
+function parse_running_vars($running){
+  $return = array();
+  $vars = explode("<br>",$running["vars"]);
+  foreach($vars as $var){
+    $v = explode(" => ",$var);
+    $return[$v[0]] = $v[1];
+  }
+  return $return;
+}
+
+// Funktion zum bauen der connect-Zeile
+function build_connect_cmd($running){
+  $query = mysql_query("SELECT * FROM games WHERE id = '".$running["gameid"]."' LIMIT 1");
+  $game = mysql_fetch_assoc($query);
+  $query = mysql_query("SELECT * FROM server WHERE id = '".$running["serverid"]."' LIMIT 1");
+  $server = mysql_fetch_assoc($query);
+
+  $connect_cmd = $game["connect_cmd"];
+  if(empty($connect_cmd)) return false;
+
+  $connect_cmd = str_replace("##port##",$running["port"],$connect_cmd);
+  $connect_cmd = str_replace("##ip##",$server["ip"],$connect_cmd);
+  $vars = parse_running_vars($running);
+  foreach($vars as $k => $v){
+    $connect_cmd = str_replace("##$k##",$v,$connect_cmd);
+  }
+
+  return $connect_cmd;
+}
+
 // Funktion zum Splitten der Token in ein Array
 function split_token($token_pool){
   $token = explode("\n",str_replace("\r","",$token_pool["token"]));
