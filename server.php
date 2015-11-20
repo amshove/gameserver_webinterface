@@ -34,6 +34,7 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
 }elseif($_GET["cmd"] == "del" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Server loeschen
   mysql_query("DELETE FROM server WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1");
+  mysql_query("DELETE FROM running WHERE serverid = '".mysql_real_escape_string($_GET["id"])."'");
 }elseif($_GET["cmd"] == "active" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   // Server aktivieren / deaktivieren
   mysql_query("UPDATE server SET active = IF(active = 0, 1, 0) WHERE id = '".mysql_real_escape_string($_GET["id"])."' LIMIT 1");
