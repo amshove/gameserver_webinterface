@@ -141,6 +141,7 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
     // $server["screen"]      - Name des Screens (eher fuer debugging als fuer den User)
     // $server["port"]        - Port des Servers
     // $server["variables"][] - Array mit allen Variablen, die zum Starten des Games gefuellt wurden (key => value)
+    // $server["connect_cmd"] - Fertige Connect CMD des laufenden Games - false wenn es kein Connect CMD gibt
     // $server["name"]        - Hostname des Servers
     // $server["ip"]          - IP des Servers
 
@@ -180,6 +181,7 @@ if($client && !empty($_GET["tcid"]) && is_numeric($_GET["tcid"])){
       $output .= "Name: ".$server["variables"]["name"]."<br>";
       $output .= "RCON: ".$server["variables"]["rcon"]."<br>";
       $output .= "Server-Passwort: ".$server["variables"]["pw"]."<br>";
+      if($server["connect_cmd"]) $output .= "<a href='".$server["connect_cmd"]."'>connect</a><br>";
       $output .= "<br><b>Der Server wird automatisch gestoppt, sobald das <a href='/turnier/?do=contest&id=".$_GET["tcid"]."'>Ergebnis</a> eingetragen wurde.</b>";
       $output .= "</div>";
       $output .= "<form action='".$_SERVER["REQUEST_URI"]."' method='POST'><input type='submit' name='restartServer' value='Server neu starten' onClick='return confirm(\"Server wirklich restarten?\");'></form>";

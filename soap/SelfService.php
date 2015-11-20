@@ -132,6 +132,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER
           $var = explode(" => ",$var);
           $server["variables"][trim($var[0])] = trim($var[1]);
         }
+        $server["connect_cmd"] = build_connect_cmd($val);
 
         $query2 = mysql_query("SELECT * FROM server WHERE id = '".$val["serverid"]."' LIMIT 1");
         $val2 = mysql_fetch_assoc($query2);
@@ -146,6 +147,7 @@ if($_SERVER["REMOTE_ADDR"] != "127.0.0.1" && $_SERVER["REMOTE_ADDR"] != $_SERVER
       // $server["screen"]      - Name des Screens (eher fuer debugging als fuer den User)
       // $server["port"]        - Port des Servers
       // $server["variables"][] - Array mit allen Variablen, die zum Starten des Games gefuellt wurden (key => value)
+      // $server["connect_cmd"] - Fertige Connect CMD des laufenden Games - false wenn es kein Connect CMD gibt
       // $server["name"]        - Hostname des Servers
       // $server["ip"]          - IP des Servers
     }

@@ -108,7 +108,7 @@ foreach($server as $s){
     echo "<a href='index.php?cmd=restart&id=".$row["id"]."' onClick='return confirm(\"Server wirklich restarten?\");'>restart</a> | ";
     echo "<a href='index.php?cmd=kill&id=".$row["id"]."' onClick='return confirm(\"Server wirklich killen?\");'>kill</a>";
     $connect_cmd = build_connect_cmd($row);
-    if($connect_cmd) echo " | <a href='$connect_cmd' target='_blank'>connect</a>";
+    if($connect_cmd) echo " | <a href='$connect_cmd'>connect</a>";
     echo "</td></tr>";
   }
   echo "</table>";
