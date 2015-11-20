@@ -92,6 +92,9 @@ echo "<br>";
 if($_GET["game"]){
   $query = mysql_query("SELECT * FROM games WHERE id = '".mysql_real_escape_string($_GET["game"])."' LIMIT 1");
   $game = mysql_fetch_assoc($query);
+
+  if($game["active"] == 0) echo "<div class='meldung_error'>Das Game ist deaktiviert - hier bastelt gerade jemand - dieses Game bitte nur f&uuml;r Testzwecke starten!</div><br>";
+
   echo "<form action='index.php?page=anlegen' method='POST'>
   <input type='hidden' name='game' value='".$game["id"]."'>
   <table>
