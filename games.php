@@ -54,6 +54,10 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   $query = mysql_query("SELECT * FROM server WHERE active = 1 ORDER BY name",$db);
   while($row = mysql_fetch_assoc($query)) $server[] = $row;
 
+  $server_mit_game = array();
+  $query = get_server_with_game(mysql_real_escape_string($_GET["id"]));
+  while($row = mysql_fetch_assoc($query)) $server_mit_game[] = $row;
+
   echo "<form action='index.php?page=games' method='POST'>";
   echo "<input type='hidden' name='gameid' value='".$_GET["id"]."'>";
   echo "<table width='200'>";
@@ -69,7 +73,7 @@ if($_GET["cmd"] == "edit" && is_numeric($_GET["id"]) && !empty($_GET["id"])){
   echo "  <tr>";
   echo "    <td valign='top'>Ziel-Server:</td>";
   echo "    <td><select name='dst[]' size='5' multiple>";
-  foreach($server as $s) echo "<option value='".$s["id"]."'>".$s["name"]."</option>";
+  foreach($server_mit_game as $s) echo "<option value='".$s["id"]."'>".$s["name"]."</option>";
   echo "    </select></td>";
   echo "  </tr>";
   echo "  <tr>";
